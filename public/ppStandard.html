@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <!-- Load the PayPal JS SDK with your PayPal Client ID-->
+    <script
+      src="https://www.paypal.com/sdk/js?client-id=AVGqIc8hFJ_fclr98apdzfSRMvn-G3RRRAqeSMbFP1lnDG-SghtB2sXeMEmDB4lKtsuF1Onn-CquEc_5&buyer-country=GB&currency=GBP&components=buttons&enable-funding=paylater,card"
+      data-sdk-integration-source="developer-studio"
+    ></script>
+
+
+    <link rel="stylesheet" href="/styles/styles.css">
+    <script src="/scripts/ppStandardScripts.js" defer></script>
+    <title>Liv's Site</title>
+  </head>
+
+  <body>
+    <nav class="navbar">
+      <div class="nav-logo"></div>
+      <ul class="nav-list" >
+        <a class="nav-links"  href="index.html">Home</a>
+        <a class="nav-links"  href="dropInUI.html"> Drop-In UI</a>
+        <a class="nav-links"  href="services">Services</a>
+        <a class="nav-links"  href="contact">Contact</a>
+      </ul>
+    </nav>
+
+    <div class="box" id="demo-frame">
+      <h2>PayPal Complete Payments</h2>
+
+     <div class="checkout" id="checkout-message"> 
+      <div class="heading">CHECKOUT</div>
+      
+      <div class="basket">
+        <img class="item-image" src="images/jumper.jpeg"> 
+        <div class="purchase">
+          <div class="item-text">Cashmere Knitted Jumper</div>
+          <div class="item-subtext">S | Black</div>
+        </div>
+        <div class="purchase-price">
+          <div class="item-price">£100</div>
+        </div>
+      </div>
+      <h1>Card Payment</h1>
+       
+
+      <div id="paypal-button-container"></div>
+      <p id="result-message"></p>
+    </div>
+    </div>
+  </body>
+</html>

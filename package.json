@@ -1,0 +1,27 @@
+{
+  "name": "app.js",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "server-dev": "nodemon server.js",
+    "start": "npm run server-dev",
+    "prod": "node server.js",
+    "format": "npx prettier --write **/*.{js,jsx,md}",
+    "format:check": "npx prettier --check **/*.{js,jsx,md}"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@paypal/paypal-server-sdk": "^1.0.0",
+    "body-parser": "^2.2.2",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.1",
+    "nodemon": "^3.0.1"
+  }
+}
