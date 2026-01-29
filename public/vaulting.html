@@ -5,18 +5,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://js.braintreegateway.com/web/3.109.0/js/hosted-fields.min.js"></script>
-    <script src="https://js.braintreegateway.com/web/3.109.0/js/three-d-secure.min.js"></script>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    <!-- Load the PayPal JS SDK with your PayPal Client ID-->
-    <script src="https://www.paypal.com/sdk/js?client-id=AVGqIc8hFJ_fclr98apdzfSRMvn-G3RRRAqeSMbFP1lnDG-SghtB2sXeMEmDB4lKtsuF1Onn-CquEc_5"></script>
+    <script src="https://js.braintreegateway.com/web/dropin/1.31.2/js/dropin.min.js"></script>
     <!-- Braintree core client -->
+    <script src="https://js.braintreegateway.com/web/3.94.0/js/three-d-secure.min.js"></script>
     <script src="https://js.braintreegateway.com/web/3.94.0/js/client.min.js"></script>
     <!-- PayPal Checkout for Braintree -->
     <script src="https://js.braintreegateway.com/web/3.94.0/js/paypal-checkout.min.js"></script>
 
     <link rel="stylesheet" href="/styles/styles.css">
-    <script src="/scripts/vaultingScripts.js" defer></script>
+    <script src="/scripts/vaultingScripts.js" type="module" defer></script>
     <title>Liv's Site</title>
   </head>
 
@@ -26,15 +23,15 @@
       <ul class="nav-list" >
         <a class="nav-links"  href="index.html">Home</a>
         <a class="nav-links"  href="dropInUI.html"> Drop-In UI</a>
-        <a class="nav-links"  href="services">Services</a>
-        <a class="nav-links"  href="contact">Contact</a>
+        <a class="nav-links"  href="hostedFields.html"> Hosted Fields</a>
+        <a class="nav-links"  href="btAdavnced.html">Advanced</a>
       </ul>
     </nav>
 
     <div class="box" id="demo-frame">
-      <h2>Payments Demo</h2>
-
-     <div class="checkout" id="checkout-message"> 
+    <h2>Vaulting </h2>
+    <main class="page">
+     <div class="checkout-card" id="checkout-message"> 
       <div class="heading">CHECKOUT</div>
       
       <div class="basket">
@@ -47,17 +44,23 @@
           <div class="item-price">£100</div>
         </div>
       </div>
-      <h1>Card Payment</h1>
-       
-
-        <button class="pay-button"  id="submit-button">Submit payment</button>
-        <br>
-        <br>
-        <div id="paypal-button"></div>
-        <hr />
-        <div id="pay-later-button"></div>
-        <div id="divResponse"></div>
+      <h1>Card Payment</h1> 
+      <div id="returning-card"></div> 
+      <div id="use-different" style="display:none;">
+        <button type="button" id="use-different-btn">Use a different card</button>
+      </div>  
+      <div id="dropin-wrapper">
+        <div id="dropin-container"></div>
+        <div class="payment-actions">
+          <button class="pay-button"  id="submit-button">Submit payment</button>
+          <div class="paypal-wrap">
+          <div id="paypal-button"></div>
+          <div id="pay-later-button"></div>
+          <div id="divResponse"></div>
+          </div>
+        </div>
+      </div>
     </div>
-    </div>
+  </main>
   </body>
 </html>

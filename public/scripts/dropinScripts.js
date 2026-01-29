@@ -26,10 +26,7 @@ async function transactionPaymentNonce(payload, setAmount) {
       body: JSON.stringify({
         paymentMethodNonce: payload.nonce,
         amount: setAmount,
-      }),
-      headers: {
-        "Content-Type": "application/json",
-      },
+      })
     });
 
     const text = await response.text();
@@ -139,10 +136,11 @@ fetch("/btcheckout")
                 // Base PayPal SDK script options
                 var loadPayPalSDKOptions = {
                     currency: 'GBP',  // Must match the currency passed in with createPayment
-                    intent: 'capture', // Must match the intent passed in with createPayment
+                    intent: 'authorize', // Must match the intent passed in with createPayment
                     components: 'buttons,messages',
                     'enable-funding': 'paylater',
                     'buyer-country': 'GB',
+                    //commit: 'true',
                     dataAttributes: {
                         amount: setAmount,
                     },
@@ -162,7 +160,11 @@ fetch("/btcheckout")
                     //ADD regular PAYPAL BUTTON
                     paypal.Buttons({
                         fundingSource: paypal.FUNDING.PAYPAL,
-
+                        style: {
+                            shape: "rect",
+                            color: "gold",
+                            label: "paypal"
+                        },
                         createOrder: function () {
                         var createPaymentRequestOptions = {
                             flow: 'checkout', // Required
@@ -223,6 +225,11 @@ fetch("/btcheckout")
                     //ADD the PAY LATER BUTTON
                     const payLater = paypal.Buttons({
                         fundingSource: paypal.FUNDING.PAYLATER,
+                        style: {
+                            shape: "rect",
+                            color: "gold",
+                            label: "paypal"
+                        },
                         createOrder: function () {
                             return paypalCheckoutInstance.createPayment({
                                 flow: 'checkout',

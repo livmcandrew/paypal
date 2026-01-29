@@ -1,11 +1,37 @@
 /** Tags **/
-h1{
-    text-align: center;
-    padding-top: 10px;
+:root {
+  --bg: #f5f6f8;
+  --card: #ffffff;
+  --text: #111827;
+  --muted: #6b7280;
+  --brand: #0070ba; /* PayPal-ish blue */
+  --radius: 14px;
 }
 
-h2{
-    text-align: center;
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  color: var(--text);
+  background: linear-gradient(180deg, #f7f7f7 0%, var(--bg) 60%);
+}
+
+h2 {
+  text-align: center;
+  font-size: 28px;
+  margin: 8px 0 22px;
+  font-weight: 800;
+}
+
+h1 {
+  padding: 18px;
+  font-size: 18px;
+  font-weight: 800;
+  border-top: 1px solid rgba(0,0,0,0.08);
+  justify-content: center; 
 }
 
 h3{
@@ -14,42 +40,31 @@ h3{
 
 /** Classes **/
 .navbar {
-    display: flex;
-    align-items: center;
-    background-color: #0079C1;
-    width: 100%;
-    height: 50px;
-    align-items: center;
-    text-align: center; 
+  background: #0b74b8;
+  padding: 12px 18px;
+  position: sticky;
+  top: 0;
 }
 
-.nav-list{
-    display: flex;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    align-items: center; 
-    height: 100%;  
-    padding-top: 15px;
+.nav-list {
+  display: flex;
+  gap: 18px;
+  margin: 0;
+  padding: 0;
+  align-items: center;
 }
 
 .nav-links {
-    display: flex;
-    width: 80px;
-    size: 20px;
-    color: white;
-    text-decoration: none;
-    text-align: center;
-    justify-content: center; 
-    display: flex;
-    height: 100%;  
-    align-self: stretch;
+  color: white;
+  text-decoration: none;
+  font-weight: 600;
+  padding: 8px 10px;
+  border-radius: 10px;
+  opacity: 0.95;
 }
 
 .nav-links:hover {
-    background-color: white;
-    color: rgb(43, 53, 101);
-    height: 100%;  
+  background: rgba
 }
 
 .home-button{
@@ -76,7 +91,7 @@ h3{
   margin: 20px;
   width: 400px;
   background-color: #ffd140;
-  font-family: 'Courier New', Courier, monospace;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
 }
 
 .pfeature-button{
@@ -84,38 +99,35 @@ h3{
   margin: 20px;
   width: 400px;
   background-color: #0079C1;
-  font-family: 'Courier New', Courier, monospace;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
 }
 
 /** drop-in ui **/
 
-.heading{
-  width: auto;
-  height: 40px;
-  background-color: black;
+.heading {
+  background: #111;
   color: white;
-  font: 2em sans-serif;
-  padding-left: 10px;
-  padding-top: 8px;
+  letter-spacing: 0.08em;
+  font-weight: 700;
+  padding: 14px 18px;
+  font-size: 14px;
+  text-transform: uppercase;
 }
 
-.basket{
-  width: 100%;
-  height: 230px;
-  float: left;
-}
-
-.item-image{
-   transform: scale(0.8);
-   float: left;
-}
-
-.purchase{
+.basket {
   display: flex;
-  width: 40%;
-  flex-direction: column;
-  padding-top: 50px;
-  float: right;
+  gap: 16px;
+  align-items: center;
+  padding: 18px;
+  border-bottom: 1px solid rgba(0,0,0,0.08);
+}
+
+.item-image {
+  width: 110px;
+  height: 110px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid rgba(0,0,0,0.08);
 }
 
 .purchase-price{
@@ -126,14 +138,23 @@ h3{
   float: right;
 }
 
-.item-text{
-  font-family: Arial, Helvetica, sans-serif;
+.purchase {
+  flex: 1;
 }
 
-.item-subtext{
-  float: right;
-  font-family: Arial, Helvetica, sans-serif;
-  color: #495057;
+.item-text {
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.item-subtext {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.purchase-price .item-price {
+  font-weight: 800;
+  font-size: 18px;
 }
 
 .item-price{
@@ -145,23 +166,70 @@ h3{
   padding-left: 40px;
 }
 
+.page {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 28px 16px 64px;
+}
+
+.checkout-card {
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  overflow: hidden; /* keeps header bar clean with rounded corners */
+  border: 1px solid rgba(0,0,0,0.06);
+  height: 780px;
+}
+
 .checkout{
     width: 40%;
     float: center;
     align-items: center;
     margin: 0 auto;
     justify-content: center;
-    border: 2px solid black;
     min-width: 600px;
-    height: 800px;
+    height: 900px;
+    background-color: white;
 }
 
-.pay-button{
-  width: 90%;
-  justify-items: center;
+.payment-actions {
+  padding: 24px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;   /* center children horizontally */
+  gap:18px;
+}
+
+/* Controls the width + centering */
+.paypal-wrap {
+  width: 100%;
+  max-width: 680px;
+  margin: 0 auto;
+  display:flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Ensures Pay Later text aligns nicely */
+.pp-message-wrap {
   text-align: center;
-  height: 50px;
-  margin-left: 25px;
+  width:100%; 
+  justify-content: center; 
+}
+
+/* Your custom button */
+.pay-button {
+  max-width: 760px;
+  width:100%;
+  height:60px;
+  border-radius:4px;
+  background:#000;
+  color:#fff;
+  border:none;
+  font-weight:700;
+  cursor:pointer;
+  box-shadow:0 6px 18px rgba(0,0,0,0.08);
+  text-align:center;
 }
 
 hr {
@@ -213,3 +281,54 @@ hr {
   box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
 }
 
+/* Vaulted payments */ 
+.vaulted-pay-btn {
+  width: 100%;
+  max-width: 650px;
+  border: 0;
+  border-radius: 12px;
+  padding: 14px 16px;
+  cursor: pointer;
+  background: #ffffff;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+}
+
+.vaulted-pay-btn:hover { transform: translateY(-1px); }
+.vaulted-pay-btn:active { transform: translateY(0px); }
+
+.vaulted-pay-left {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.vaulted-badge {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  background: rgba(0,0,0,0.06);
+  font-weight: 700;
+}
+
+.vaulted-title {
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.vaulted-subtitle {
+  font-size: 12px;
+  opacity: 0.7;
+  margin-top: 2px;
+}
+
+.vaulted-arrow {
+  opacity: 0.6;
+  font-size: 18px;
+}

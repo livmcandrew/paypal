@@ -5,8 +5,6 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://js.braintreegateway.com/web/dropin/1.31.2/js/dropin.min.js"></script>
-    <!-- Load the PayPal JS SDK with your PayPal Client ID-->
-    <!-- <script src="https://www.paypal.com/sdk/js?client-id=AVGqIc8hFJ_fclr98apdzfSRMvn-G3RRRAqeSMbFP1lnDG-SghtB2sXeMEmDB4lKtsuF1Onn-CquEc_5"></script> -->
     <!-- Braintree core client -->
     <script src="https://js.braintreegateway.com/web/3.134.0/js/client.min.js"></script>
     <!-- PayPal Checkout for Braintree -->
@@ -23,12 +21,13 @@
         <a class="nav-links"  href="index.html">Home</a>
         <a class="nav-links"  href="hostedFields.html"> Hosted Fields</a>
         <a class="nav-links"  href="vaulting.html">Vaulting</a>
-        <a class="nav-links"  href="">Advanced</a>
+        <a class="nav-links"  href="btAdavnced.html">Advanced</a>
       </ul>
   </nav>
   <body>
-    <h1>Drop-In UI Demo</h1>
-    <div class="checkout"> 
+    <h2>Drop-In UI Demo</h2>
+    <main class="page">
+    <div class="checkout-card" id="checkout-message"> 
       <div class="heading">CHECKOUT</div>
       
       <div class="basket">
@@ -43,18 +42,23 @@
       </div>
       <div id="dropin-wrapper">
         <div id="dropin-container"></div>
-        <button class="pay-button" id="submit-button">Submit payment</button>
+        <div class="payment-actions">
+          <button class="pay-button" id="submit-button">Submit payment</button>
+
+          <div class="paypal-wrap">
+            <div id="paypal-button"></div>
+            <div id="pay-later-button"></div>
+
+            <div class="pp-message-wrap">
+              <div data-pp-message
+                  data-pp-placement="home"
+                  data-pp-amount="10.00">
+              </div>
+            </div>
+          </div>
         </div>
-        <br>
-        <div class="pay-button" id="paypal-button"></div>
-        <hr />
-        <div class="pay-button" id="pay-later-button"></div>
-        <div
-          data-pp-message
-          data-pp-amount="90.00"
-          data-pp-style-align="left">
-        ></div>
-        <div id="divResponse"></div>
+        </div>
       </div>
+    </main>
   </body>
 </html>

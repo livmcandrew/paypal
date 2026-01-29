@@ -21,40 +21,35 @@
       <div class="nav-logo"></div>
       <ul class="nav-list" >
         <a class="nav-links"  href="index.html">Home</a>
-        <a class="nav-links"  href="hostedFields.html"> Hosted Fields</a>
-        <a class="nav-links"  href="vaulting.html">Vaulting</a>
-        <a class="nav-links"  href="">Advanced</a>
+        <a class="nav-links"  href="ppStandard.html">Standard</a>
+        <a class="nav-links"  href=""></a>
+        <a class="nav-links"  href=""></a>
       </ul>
   </nav>
   <body>
-    <h1>Drop-In UI Demo</h1>
-    <div class="checkout"> 
-      <div class="heading">CHECKOUT</div>
-      
-      <div class="basket">
-        <img class="item-image" src="images/jumper.jpeg"> 
-        <div class="purchase">
-          <div class="item-text">Cashmere Knitted Jumper</div>
-          <div class="item-subtext">S | Black</div>
+    <div class="box" id="demo-frame">
+      <h2>Advanced Checkout</h2>
+      <main class="page">
+        <div class="checkout-card" id="checkout-message"> 
+          <div class="heading">CHECKOUT</div>
+          
+          <div class="basket">
+            <img class="item-image" src="images/jumper.jpeg"> 
+            <div class="purchase">
+              <div class="item-text">Cashmere Knitted Jumper</div>
+              <div class="item-subtext">S | Black</div>
+            </div>
+            <div class="purchase-price">
+              <div class="item-price">£100</div>
+            </div>
+          </div>
+          <h1>Card Payment</h1>
+          
+
+          <div id="paypal-button-container"></div>
+          <p id="result-message"></p>
         </div>
-        <div class="purchase-price">
-          <div class="item-price">£100</div>
-        </div>
-      </div>
-      <div id="dropin-wrapper">
-        <div id="dropin-container"></div>
-        <button class="pay-button" id="submit-button">Submit payment</button>
-        </div>
-        <br>
-        <div class="pay-button" id="paypal-button"></div>
-        <hr />
-        <div class="pay-button" id="pay-later-button"></div>
-        <div
-          data-pp-message
-          data-pp-amount="90.00"
-          data-pp-style-align="left">
-        ></div>
-        <div id="divResponse"></div>
-      </div>
+      </main>
+    </div>
   </body>
 </html>
