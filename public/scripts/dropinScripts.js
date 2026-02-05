@@ -105,18 +105,6 @@ fetch("/btcheckout")
     }
     );
 
-    // Create a client for PAYPAL Button
-    braintree.client.create({
-    authorization: client_token
-    }, function (clientErr, clientInstance) {
-
-    // Stop if there was a problem creating the client.
-    // This could happen if there is a network error or if the authorization is invalid.
-    if (clientErr) {
-        console.error('Error creating client:', clientErr);
-        return;
-    }
-
     // Create a client.
     braintree.client.create({
         authorization: client_token
@@ -257,4 +245,3 @@ fetch("/btcheckout")
             });
         });
     });
-});

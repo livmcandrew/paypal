@@ -6,13 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://js.braintreegateway.com/web/dropin/1.31.2/js/dropin.min.js"></script>
     <!-- Load the PayPal JS SDK with your PayPal Client ID-->
-    <!-- <script src="https://www.paypal.com/sdk/js?client-id=AVGqIc8hFJ_fclr98apdzfSRMvn-G3RRRAqeSMbFP1lnDG-SghtB2sXeMEmDB4lKtsuF1Onn-CquEc_5"></script> -->
-    <!-- Braintree core client -->
-    <script src="https://js.braintreegateway.com/web/3.134.0/js/client.min.js"></script>
-    <!-- PayPal Checkout for Braintree -->
-    <script src="https://js.braintreegateway.com/web/3.134.0/js/paypal-checkout.min.js"></script>
+    <script src="https://www.paypal.com/sdk/js?client-id=AVGqIc8hFJ_fclr98apdzfSRMvn-G3RRRAqeSMbFP1lnDG-SghtB2sXeMEmDB4lKtsuF1Onn-CquEc_5&buyer-country=GB&currency=GBP&components=buttons&enable-funding=paylater,card"></script>
 
-    <script src="/scripts/dropinScripts.js" defer></script>
+    <script src="/scripts/ppAScripts.js" defer></script>
     <link rel="stylesheet" href="/styles/styles.css">
     <title>Liv's Site</title>
   </head>
@@ -44,10 +40,19 @@
             </div>
           </div>
           <h1>Card Payment</h1>
+      
+              <br>
+               
+                <footer class="panel__footer">
+                <button class="pay-button">Pay</button>
+                <br>
+                <br>
+                <div id="paypal-button-container"></div>
+                <p id="result-message"></p>
+                </footer>
+              </div>
+            </div>
           
-
-          <div id="paypal-button-container"></div>
-          <p id="result-message"></p>
         </div>
       </main>
     </div>

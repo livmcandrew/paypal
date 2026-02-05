@@ -176,9 +176,9 @@ h3{
   background: var(--card);
   border-radius: var(--radius);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-  overflow: hidden; /* keeps header bar clean with rounded corners */
+  overflow: hidden;
   border: 1px solid rgba(0,0,0,0.06);
-  height: 780px;
+   min-height: 780px;
 }
 
 .checkout{
