@@ -123,18 +123,16 @@ fetch("/btcheckout")
 
                 // Base PayPal SDK script options
                 var loadPayPalSDKOptions = {
-                    currency: 'GBP',  // Must match the currency passed in with createPayment
-                    intent: 'authorize', // Must match the intent passed in with createPayment
+                    ccurrency: 'GBP',  // Must match the currency passed in with createPayment
+                    intent: 'authorize', // Must match the intent passed in with createPayment 
                     components: 'buttons,messages',
                     'enable-funding': 'paylater',
                     'buyer-country': 'GB',
-                    //commit: 'true',
+                    commit: 'true',
                     dataAttributes: {
                         amount: setAmount,
                     },
                 }
-
-                //loadPayPalSDKOptions.commit = false
                 
                 // Stop if there was a problem creating PayPal Checkout.
                 if (paypalCheckoutErr) {
@@ -159,7 +157,7 @@ fetch("/btcheckout")
                             intent: 'capture',
                             currency: 'GBP',
                             amount: setAmount,
-                            //userAction: 'CONTINUE'
+                            userAction: 'PAY'
                         };
 
                         return paypalCheckoutInstance.createPayment(createPaymentRequestOptions);
@@ -223,7 +221,8 @@ fetch("/btcheckout")
                                 flow: 'checkout',
                                 intent: 'authorize',
                                 currency: 'GBP',
-                                amount: setAmount
+                                amount: setAmount,
+                                userAction: 'PAY'
                             });
                         },
                         onApprove: function (data, actions) {

@@ -42,6 +42,12 @@ async function transactionPaymentNonce(payload, setAmount) {
 };
 
 // Apple Pay
+function showMessage(text, success = true) { 
+  const messageBox = document.getElementById('result-message'); 
+  messageBox.textContent = text; 
+  messageBox.style.color = success ? 'green' : 'red'; 
+} 
+
 if (window.ApplePaySession && ApplePaySession.supportsVersion(3) && ApplePaySession.canMakePayments()) { 
     // This device supports version 3 of Apple Pay. 
     console.log("ApplePay supported") 
@@ -285,59 +291,60 @@ fetch("/btcheckout")
                     document.querySelector('#apple-pay-button').style.display = 'block' 
                     document.querySelector('#apple-pay-button').addEventListener('click', async () => { 
 
-                        const session = new ApplePaySession(3, paymentRequest); 
+                    const session = new ApplePaySession(3, paymentRequest); 
 
-                        // Merchant validation 
-                        session.onvalidatemerchant = async (event) => { 
+                    // Merchant validation 
+                    session.onvalidatemerchant = async (event) => { 
+
+                    try { 
+                        const validationData = await applePayInstance.performValidation({ 
+                            validationURL: event.validationURL, 
+                            displayName: 'Your Store' 
+                        }); 
+
+                        session.completeMerchantValidation(validationData); 
+
+                    } catch (err) { 
+                        console.error('Merchant validation failed:', err); 
+                        console.log('Merchant validation failed:', err); 
+                        session.abort(); 
+                    } 
+                    }; 
+
+                    // Payment authorized → tokenize with Braintree 
+                    session.onpaymentauthorized = async (event) => { 
 
                         try { 
-                            const validationData = await applePayInstance.performValidation({ 
-                                validationURL: event.validationURL, 
-                                displayName: 'Your Store' 
-                            }); 
+                        const { nonce } = await applePayInstance.tokenize({ 
+                            token: event.payment.token 
+                        }); 
 
-                            session.completeMerchantValidation(validationData); 
+                        // → nonce (Apple Pay) → send to your server to create a transaction 
+                        const body = { 
+                            paymentMethodNonce: nonce, 
+                            amount: paymentRequest.total.amount 
+                        }; 
 
+                        const resp = await fetch('/btcheckout', { 
+                            method: 'POST', 
+                            headers: { 'Content-Type': 'application/json' }, 
+                            body: JSON.stringify(body) 
+
+                        }); 
+                        
+                        if (!resp.ok) throw new Error(await resp.text());       
+                        session.completePayment(ApplePaySession.STATUS_SUCCESS); 
+                        showMessage(("Payment Successful: ", resp.json()), true); 
+                        console.log(resp.json()) 
+    
                         } catch (err) { 
-                            console.error('Merchant validation failed:', err); 
-                            session.abort(); 
+                            console.error('Payment failed:', err); 
+                            console.log('Merchant validation failed:', err); 
                         } 
-                        }; 
+                    }; 
 
-                        // Payment authorized → tokenize with Braintree 
-                        session.onpaymentauthorized = async (event) => { 
-
-                            try { 
-                            const { nonce } = await applePayInstance.tokenize({ 
-                                token: event.payment.token 
-                            }); 
-
-                            // → nonce (Apple Pay) → send to your server to create a transaction 
-                            const body = { 
-                                paymentMethodNonce: nonce, 
-                                amount: paymentRequest.total.amount 
-                            }; 
-
-                            const resp = await fetch('/btcheckout', { 
-                                method: 'POST', 
-                                headers: { 'Content-Type': 'application/json' }, 
-                                body: JSON.stringify(body) 
-
-                            }); 
-                            
-                            if (!resp.ok) throw new Error(await resp.text());       
-                            session.completePayment(ApplePaySession.STATUS_SUCCESS); 
-                            showMessage(("Payment Successful: ", resp.json()), true); 
-                            console.log(resp.json()) 
-        
-                            } catch (err) { 
-                                console.error('Payment failed:', err); 
-                                session.completePayment(ApplePaySession.STATUS_FAILURE); 
-                            } 
-                        }; 
-
-                        session.begin(); 
-                    }) 
+                    session.begin(); 
+                }) 
             }); 
         
         });
