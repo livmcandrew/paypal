@@ -334,8 +334,7 @@ fetch("/btcheckout")
                         
                         if (!resp.ok) throw new Error(await resp.text());       
                         session.completePayment(ApplePaySession.STATUS_SUCCESS); 
-                        showMessage(("Payment Successful: ", resp.json()), true); 
-                        console.log(resp.json()) 
+                        showMessage(("Payment Successful: ", resp.json()), true);  
     
                         } catch (err) { 
                             console.error('Payment failed:', err); 
