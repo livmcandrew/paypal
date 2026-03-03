@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://js.braintreegateway.com/web/dropin/1.44.0/js/dropin.min.js"></script>
+    <!-- Braintree core client -->
+    <script src="https://js.braintreegateway.com/web/3.134.0/js/client.min.js"></script>
+    <!-- PayPal Checkout for Braintree -->
+    <script src="https://js.braintreegateway.com/web/3.134.0/js/paypal-checkout.min.js"></script>
+
+    <script src="/scripts/BT/dropinScripts.js" defer></script>
+    <link rel="stylesheet" href="/styles/styles.css">
+    <title>Liv's Site</title>
+  </head>
+  
+  <nav class="navbar">
+      <div class="nav-logo"></div>
+      <ul class="nav-list" >
+        <a class="nav-links"  href="../../index.html">Home</a>
+        <a class="nav-links"  href="hostedFields.html"> Hosted Fields</a>
+        <a class="nav-links"  href="VaultingNewCust.html">Vaulting</a>
+        <a class="nav-links"  href="Adavnced.html">Advanced</a>
+      </ul>
+  </nav>
+  <body>
+    <h2>Drop-In UI</h2>
+    <main class="page">
+    <div class="checkout-card" id="checkout-message"> 
+      <div class="heading">CHECKOUT</div>
+      
+      <div class="basket">
+        <img class="item-image" src="/images/jumper.jpeg"> 
+        <div class="purchase">
+          <div class="item-text">Cashmere Knitted Jumper</div>
+          <div class="item-subtext">S | Black</div>
+        </div>
+        <div class="purchase-price">
+          <div class="item-price">£100</div>
+        </div>
+      </div>
+      <div id="dropin-wrapper">
+        <div id="dropin-container"></div>
+        <div class="payment-actions">
+          <button class="pay-button" id="submit-button">Submit payment</button>
+
+         <div class="paypal-wrap"> 
+            <div id="paypal-button"></div>
+            <div id="pay-later-button"></div>
+
+            <div class="pp-message-wrap">
+              <div data-pp-message
+                  data-pp-placement="home"
+                  data-pp-amount="150.00">
+              </div>
+            </div>
+          </div>
+        </div>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>
