@@ -1,22 +1,19 @@
 const paypalButtons = window.paypal.Buttons({
-   style: {
+    style: {
         shape: "pill",
         layout: "vertical",
         color: "gold",
         label: "paypal",
     },
-   message: {
+    message: {
         amount: 100,
     },
-   async createOrder() {
+    appSwitchWhenAvailable: true,
+    async createOrder() {
         try {
             const response = await fetch("/ppcheckout/api/orders", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                // use the "body" param to optionally pass additional order information
-                // like product ids and quantities
+                headers: {"Content-Type": "application/json"},
                 body: JSON.stringify({
                     cart: [
                         {
@@ -26,24 +23,13 @@ const paypalButtons = window.paypal.Buttons({
                     ],
                 }),
             });
-
             const orderData = await response.json();
-
-            if (orderData.id) {
-                return orderData.id;
-            }
-            const errorDetail = orderData?.details?.[0];
-            const errorMessage = errorDetail
-                ? `${errorDetail.issue} ${errorDetail.description} (${orderData.debug_id})`
-                : JSON.stringify(orderData);
-
-            throw new Error(errorMessage);
         } catch (error) {
             console.error(error);
             // resultMessage(`Could not initiate PayPal Checkout...<br><br>${error}`);
-        }
+        }       
     },
-   async onApprove(data, actions) {
+    async onApprove(data, actions) {
         try {
             const response = await fetch(
                 `/ppcheckout/api/orders/${data.orderID}/capture`,
@@ -56,11 +42,6 @@ const paypalButtons = window.paypal.Buttons({
             );
 
             const orderData = await response.json();
-            // Three cases to handle:
-            //   (1) Recoverable INSTRUMENT_DECLINED -> call actions.restart()
-            //   (2) Other non-recoverable errors -> Show a failure message
-            //   (3) Successful transaction -> Show confirmation or thank you message
-
             const errorDetail = orderData?.details?.[0];
 
             if (errorDetail?.issue === "INSTRUMENT_DECLINED") {
@@ -104,7 +85,11 @@ const paypalButtons = window.paypal.Buttons({
     },
 
 });
-paypalButtons.render("#paypal-button");
+if (paypalButtons.hasReturned()) {
+  paypalButtons.resume();
+} else {
+  paypalButtons.render("#paypal-button");
+}
 
 
 // Example function to show a result to the user. Your site's UI library can be used instead.
