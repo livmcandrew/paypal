@@ -6,14 +6,28 @@ const express = require("express");
 const path = require("path");
 const ppcheckout = require("./routes/ppcheckout");
 const btcheckout = require("./routes/btcheckout");
+const adyenRoutes = require("./routes/adyen");
 const { json, urlencoded } = require("body-parser");
 const braintree = require("braintree");
+require("dotenv").config();
 //console.log(integration)
 
 const app = express();
+//For Adyen Integration
+app.use((req, res, next) => {
+  res.setHeader("Cross-Origin-Opener-Policy", "same-origin-allow-popups");
+  next();
+});
+
 app.use(json());
 app.use(urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
+
+//For Adyen Integration
+app.use("/api", adyenRoutes);
+
+// Include your idempotency key when you make an API request.
+const requestOptions = { idempotencyKey: "YOUR_IDEMPOTENCY_KEY" };
 
 // changes the to correct checkout page depending on integration requested
 if (integration === "pp") {
@@ -26,14 +40,12 @@ if (integration === "pp") {
   console.error("No valid integration specified. Use int=pp or int=bt");
   process.exit(1);
 }
-
-
 // // route to checkout.js
 // app.use("/checkout", checkout);
 
 // run server 
 app.get("/", (req, res) => {
-  res.send(index.html);
+  res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
 app.listen(3000, () => {

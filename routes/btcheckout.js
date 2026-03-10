@@ -243,30 +243,6 @@ router.post("/vaultWithCheckout", express.json(), (req, res) => {
   });
 });
 
-// // Fetch Vaulted customer
-// router.get("/vaultedPaymentMethod/:token", (req, res) => {
-//   const { token } = req.params;
-
-//   gateway.paymentMethod.find(token, (err, paymentMethod) => {
-//     if (err) {
-//       return res.status(404).send({ error: err.message || err });
-//     }
-
-//     // This object shape depends on type: creditCard vs paypalAccount
-//     // We'll normalize a small display payload:
-//     const isCard = paymentMethod?.maskedNumber || paymentMethod?.last4;
-
-//     res.send({
-//       success: true,
-//       type: paymentMethod?.cardType ? "creditCard" : "paypal",
-//       last4: paymentMethod?.last4 || (paymentMethod?.maskedNumber ? paymentMethod.maskedNumber.slice(-4) : null),
-//       maskedNumber: paymentMethod?.maskedNumber || null,
-//       cardType: paymentMethod?.cardType || null,
-//       email: paymentMethod?.email || null, // PayPal may have email
-//     });
-//   });
-// });
-
 // Payment using a vaulted paymentMethodToken (instead of nonce)
 router.post("/chargeVaulted", express.json(), (req, res) => {
   console.log("chargeVaulted body:", req.body);
