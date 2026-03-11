@@ -24,6 +24,15 @@ const paypalButtons = window.paypal.Buttons({
                 }),
             });
             const orderData = await response.json();
+
+            if (orderData.id) {
+                return orderData.id;
+            }
+            const errorDetail = orderData?.details?.[0];
+            const errorMessage = errorDetail
+                ? `${errorDetail.issue} ${errorDetail.description} (${orderData.debug_id})`
+                : JSON.stringify(orderData);
+
         } catch (error) {
             console.error(error);
             // resultMessage(`Could not initiate PayPal Checkout...<br><br>${error}`);
@@ -65,7 +74,7 @@ const paypalButtons = window.paypal.Buttons({
                         ?.authorizations?.[0];
                 resultMessage(
                     `Transaction ${transaction.status}: ${transaction.id}<br>
-          <br>See console for all available details`
+                    <br>See console for all available details`
                 );
                 console.log(
                     "Capture result",
@@ -83,8 +92,9 @@ const paypalButtons = window.paypal.Buttons({
     onCancel: function (data) {
         console.log('PayPal payment cancelled', JSON.stringify(data, 0, 2));
     },
-
+    appSwitchWhenAvailable: true,
 });
+
 if (paypalButtons.hasReturned()) {
   paypalButtons.resume();
 } else {
@@ -94,6 +104,7 @@ if (paypalButtons.hasReturned()) {
 
 // Example function to show a result to the user. Your site's UI library can be used instead.
 function resultMessage(message) {
-    const container = document.querySelector("#result-message");
+     const container = document.querySelector("#result-message");
+    container.innerHTML = "";
     container.innerHTML = message;
 }
