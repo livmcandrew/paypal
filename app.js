@@ -10,9 +10,9 @@ const adyenRoutes = require("./routes/adyen");
 const { json, urlencoded } = require("body-parser");
 const braintree = require("braintree");
 require("dotenv").config();
+const app = express();
 //console.log(integration)
 
-const app = express();
 //For Adyen Integration
 app.use((req, res, next) => {
   res.setHeader("Cross-Origin-Opener-Policy", "same-origin-allow-popups");
@@ -40,8 +40,6 @@ if (integration === "pp") {
   console.error("No valid integration specified. Use int=pp or int=bt");
   process.exit(1);
 }
-// // route to checkout.js
-// app.use("/checkout", checkout);
 
 // run server 
 app.get("/", (req, res) => {

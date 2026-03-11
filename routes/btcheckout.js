@@ -4,7 +4,6 @@ const braintree = require("braintree");
 const { resolve } = require("path");
 const { rejects } = require("assert");
 const dotenv = require("dotenv").config();
-const vaultStore = new Map(); // key: yourUserId/email, value: { customerId, paymentMethodToken }
 
 const gateway = new braintree.BraintreeGateway({
   environment: braintree.Environment.Sandbox,
