@@ -25,6 +25,7 @@ const paypalButtons = window.paypal.Buttons({
             });
             const orderData = await response.json();
 
+            //return orderData.id
             if (orderData.id) {
                 return orderData.id;
             }
@@ -32,10 +33,12 @@ const paypalButtons = window.paypal.Buttons({
             const errorMessage = errorDetail
                 ? `${errorDetail.issue} ${errorDetail.description} (${orderData.debug_id})`
                 : JSON.stringify(orderData);
+            throw new Error(errorMessage);
 
         } catch (error) {
             console.error(error);
-            // resultMessage(`Could not initiate PayPal Checkout...<br><br>${error}`);
+            resultMessage(`Could not initiate PayPal Checkout...<br><br>${error}`);
+            throw error;
         }       
     },
     async onApprove(data, actions) {
@@ -87,6 +90,7 @@ const paypalButtons = window.paypal.Buttons({
             resultMessage(
                 `Sorry, your transaction could not be processed...<br><br>${error}`
             );
+            throw error;
         }
     },
     onCancel: function (data) {
