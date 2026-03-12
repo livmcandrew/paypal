@@ -162,9 +162,12 @@ const createOrderAppSwitch = async (cart) => {
       paymentSource: {
         paypal: {
           experienceContext: {
-            userAction: "PAY_NOW",
+            userAction: PaypalExperienceUserAction.PayNow,
             returnUrl: "https://paypal-ppcp.onrender.com/html/PP/appSwitch.html?sessionId=${sessionId}",
             cancelUrl: "https://paypal-ppcp.onrender.com/html/PP/appSwitch.html?sessionId=${sessionId}",
+            appSwitchPreference: {
+                launchPaypalApp: true, 
+            }
           },
         },
       },
@@ -180,14 +183,17 @@ const createOrderAppSwitch = async (cart) => {
               },
             },
           },
-          items: [
+           items: [
             {
               name: "Cashmere Knitted Jumper",
               unitAmount: {
                 currencyCode: "GBP",
-                value: "100",
-              }
-            }
+                value: "100.00",
+              },
+              quantity: "1",
+              description: "Cashmere Knitted Jumper",
+              sku: "jumper-001",
+            },
           ],
         },
       ],
@@ -195,7 +201,7 @@ const createOrderAppSwitch = async (cart) => {
     prefer: "return=minimal",
   };
 
-  const { body, ...httpResponse } = await ordersController.createOrderAppSwitch(collect);
+  const { body, ...httpResponse } = await ordersController.createOrder(collect);
 
   return {
     jsonResponse: JSON.parse(body),
