@@ -10,8 +10,9 @@ const paypalButtons = window.paypal.Buttons({
     },
     appSwitchWhenAvailable: true,
     async createOrder() {
+        //runs when PP button is selected
         try {
-            const response = await fetch("/ppcheckout/api/orders", {
+            const response = await fetch("/ppcheckout/api/orders/appSwitch", {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
                 body: JSON.stringify({
@@ -96,7 +97,6 @@ const paypalButtons = window.paypal.Buttons({
     onCancel: function (data) {
         console.log('PayPal payment cancelled', JSON.stringify(data, 0, 2));
     },
-    appSwitchWhenAvailable: true,
 });
 
 if (paypalButtons.hasReturned()) {

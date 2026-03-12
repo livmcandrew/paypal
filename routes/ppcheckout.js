@@ -43,7 +43,6 @@ const paymentsController = new PaymentsController(client);
 
 /**
  * Create an order to start the transaction.
- * @see https://developer.paypal.com/docs/api/orders/v2/#orders_create
  */
 const createOrder = async (cart) => {
    const collect = {
@@ -115,7 +114,6 @@ router.post("/api/orders", async (req, res) => {
 
 /**
  * Capture payment for the created order to complete the transaction.
- * @see https://developer.paypal.com/docs/api/orders/v2/#orders_capture
  */
 const captureOrder = async (orderID) => {
     const collect = {
@@ -154,3 +152,66 @@ router.post("/api/orders/:orderID/capture", async (req, res) => {
 });
 
 
+/**
+ * Create an order for APP SWITCH to start the transaction.
+ */
+const createOrderAppSwitch = async (cart) => {
+   const collect = {
+    body: {
+      intent: "CAPTURE",
+      paymentSource: {
+        paypal: {
+          experienceContext: {
+            userAction: "PAY_NOW",
+            returnUrl: "https://paypal-ppcp.onrender.com/html/PP/appSwitch.html?",
+            cancelUrl: "https://paypal-ppcp.onrender.com/html/PP/appSwitch.html?",
+          },
+        },
+      },
+      purchaseUnits: [
+        {
+          amount: {
+            currencyCode: "GBP",
+            value: "100",
+            breakdown: {
+              itemTotal: {
+                currencyCode: "GBP",
+                value: "100",
+              },
+            },
+          },
+          items: [
+            {
+              name: "Cashmere Knitted Jumper",
+              unitAmount: {
+                currencyCode: "GBP",
+                value: "100",
+              }
+            }
+          ],
+        },
+      ],
+    },
+    prefer: "return=minimal",
+  };
+
+  const { body, ...httpResponse } = await ordersController.createOrder(collect);
+
+  return {
+    jsonResponse: JSON.parse(body),
+    httpStatusCode: httpResponse.statusCode,
+  };
+};
+
+// createOrder route for APP SWTICH
+router.post("/api/orders/appSwitch", async (req, res) => {
+    try {
+        // use the cart information passed from the front-end to calculate the order amount detals
+        const { cart } = req.body;
+        const { jsonResponse, httpStatusCode } = await createOrderAppSwitch(cart);
+        res.status(httpStatusCode).json(jsonResponse);
+    } catch (error) {
+        console.error("Failed to create order:", error);
+        res.status(500).json({ error: "Failed to create order." });
+    }
+});
