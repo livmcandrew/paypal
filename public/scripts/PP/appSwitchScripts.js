@@ -1,20 +1,22 @@
 const paypalButtons = window.paypal.Buttons({
-    style: {
-        shape: "pill",
+   style: {
+        shape: "rect",
         layout: "vertical",
         color: "gold",
         label: "paypal",
     },
-    message: {
+   message: {
         amount: 100,
     },
-    appSwitchWhenAvailable: true,
-    async createOrder() {
-        //runs when PP button is selected
+   async createOrder() {
         try {
-            const response = await fetch("/ppcheckout/api/orders/appSwitch", {
+            const response = await fetch("/api/orders/appSwitch", {
                 method: "POST",
-                headers: {"Content-Type": "application/json"},
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                // use the "body" param to optionally pass additional order information
+                // like product ids and quantities
                 body: JSON.stringify({
                     cart: [
                         {
@@ -24,9 +26,9 @@ const paypalButtons = window.paypal.Buttons({
                     ],
                 }),
             });
+
             const orderData = await response.json();
 
-            //return orderData.id
             if (orderData.id) {
                 return orderData.id;
             }
@@ -34,18 +36,17 @@ const paypalButtons = window.paypal.Buttons({
             const errorMessage = errorDetail
                 ? `${errorDetail.issue} ${errorDetail.description} (${orderData.debug_id})`
                 : JSON.stringify(orderData);
-            throw new Error(errorMessage);
 
+            throw new Error(errorMessage);
         } catch (error) {
             console.error(error);
-            resultMessage(`Could not initiate PayPal Checkout...<br><br>${error}`);
-            throw error;
-        }       
+            // resultMessage(`Could not initiate PayPal Checkout...<br><br>${error}`);
+        }
     },
-    async onApprove(data, actions) {
+   async onApprove(data, actions) {
         try {
             const response = await fetch(
-                `/ppcheckout/api/orders/${data.orderID}/capture`,
+                `/api/orders/${data.orderID}/capture`,
                 {
                     method: "POST",
                     headers: {
@@ -55,6 +56,11 @@ const paypalButtons = window.paypal.Buttons({
             );
 
             const orderData = await response.json();
+            // Three cases to handle:
+            //   (1) Recoverable INSTRUMENT_DECLINED -> call actions.restart()
+            //   (2) Other non-recoverable errors -> Show a failure message
+            //   (3) Successful transaction -> Show confirmation or thank you message
+
             const errorDetail = orderData?.details?.[0];
 
             if (errorDetail?.issue === "INSTRUMENT_DECLINED") {
@@ -78,7 +84,7 @@ const paypalButtons = window.paypal.Buttons({
                         ?.authorizations?.[0];
                 resultMessage(
                     `Transaction ${transaction.status}: ${transaction.id}<br>
-                    <br>See console for all available details`
+          <br>See console for all available details`
                 );
                 console.log(
                     "Capture result",
@@ -91,12 +97,9 @@ const paypalButtons = window.paypal.Buttons({
             resultMessage(
                 `Sorry, your transaction could not be processed...<br><br>${error}`
             );
-            throw error;
         }
     },
-    onCancel: function (data) {
-        console.log('PayPal payment cancelled', JSON.stringify(data, 0, 2));
-    },
+    appSwitchWhenAvailable: true,
 });
 
 if (paypalButtons.hasReturned()) {
@@ -104,7 +107,6 @@ if (paypalButtons.hasReturned()) {
 } else {
   paypalButtons.render("#paypal-button");
 }
-
 
 // Example function to show a result to the user. Your site's UI library can be used instead.
 function resultMessage(message) {

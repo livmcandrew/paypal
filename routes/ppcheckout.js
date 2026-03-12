@@ -157,56 +157,70 @@ router.post("/api/orders/:orderID/capture", async (req, res) => {
  */
 const createOrderAppSwitch = async (cart) => {
    const collect = {
-    body: {
-      intent: "CAPTURE",
-      paymentSource: {
-        paypal: {
-          experienceContext: {
-            userAction: PaypalExperienceUserAction.PayNow,
-            returnUrl: "https://paypal-ppcp.onrender.com/html/PP/appSwitch.html?sessionId=${sessionId}",
-            cancelUrl: "https://paypal-ppcp.onrender.com/html/PP/appSwitch.html?sessionId=${sessionId}",
-            appSwitchPreference: {
-                launchPaypalApp: true, 
-            }
-          },
-        },
-      },
-      purchaseUnits: [
-        {
-          amount: {
-            currencyCode: "GBP",
-            value: "100",
-            breakdown: {
-              itemTotal: {
-                currencyCode: "GBP",
-                value: "100",
-              },
+        body: {
+            intent: "CAPTURE",
+            purchaseUnits: [
+                {
+                    amount: {
+                        currencyCode: "GBP",
+                        value: "100",
+                        breakdown: {
+                            itemTotal: {
+                                currencyCode: "GBP",
+                                value: "100",
+                            },
+                        },
+                    },
+                    // lookup item details in `cart` from database
+                    items: [
+                        {
+                            name: "T-Cashmere Knitted Jumper",
+                            unitAmount: {
+                                currencyCode: "GBP",
+                                value: "100",
+                            },
+                            quantity: "1",
+                            description: "Cashmere Knitted Jumper",
+                            sku: "sku01",
+                        },
+                    ],
+                },
+            ],
+           paymentSource: {
+                paypal: {
+                    experienceContext: {
+                        userAction: PaypalExperienceUserAction.PayNow,
+                       returnUrl:
+                            "https://paypal-ppcp.onrender.com/html/PP/appSwitch.html",
+                        cancelUrl:
+                            "https://paypal-ppcp.onrender.com/html/PP/appSwitch.html",
+                        appSwitchPreference: {
+                            launchPaypalApp: true,
+                        },
+                    },
+                },
             },
-          },
-           items: [
-            {
-              name: "Cashmere Knitted Jumper",
-              unitAmount: {
-                currencyCode: "GBP",
-                value: "100.00",
-              },
-              quantity: "1",
-              description: "Cashmere Knitted Jumper",
-              sku: "jumper-001",
-            },
-          ],
         },
-      ],
-    },
-    prefer: "return=minimal",
-  };
+        prefer: "return=minimal",
+    };
+   
 
-  const { body, ...httpResponse } = await ordersController.createOrder(collect);
-
-  return {
-    jsonResponse: JSON.parse(body),
-    httpStatusCode: httpResponse.statusCode,
-  };
+    try {
+        const { body, ...httpResponse } = await ordersController.createOrder(
+            collect
+        );
+        // Get more response info...
+        // const { statusCode, headers } = httpResponse;
+        return {
+            jsonResponse: JSON.parse(body),
+            httpStatusCode: httpResponse.statusCode,
+        };
+    } catch (error) {
+        if (error instanceof ApiError) {
+            // const { statusCode, headers } = error;
+            throw new Error(error.message);
+        }
+    }
 };
 
 // createOrder route for APP SWTICH
