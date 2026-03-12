@@ -195,7 +195,7 @@ const createOrderAppSwitch = async (cart) => {
     prefer: "return=minimal",
   };
 
-  const { body, ...httpResponse } = await ordersController.createOrder(collect);
+  const { body, ...httpResponse } = await ordersController.createOrderAppSwitch(collect);
 
   return {
     jsonResponse: JSON.parse(body),
