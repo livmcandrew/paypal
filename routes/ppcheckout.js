@@ -163,8 +163,8 @@ const createOrderAppSwitch = async (cart) => {
         paypal: {
           experienceContext: {
             userAction: "PAY_NOW",
-            returnUrl: "https://paypal-ppcp.onrender.com/html/PP/appSwitch.html?",
-            cancelUrl: "https://paypal-ppcp.onrender.com/html/PP/appSwitch.html?",
+            returnUrl: "https://paypal-ppcp.onrender.com/html/PP/appSwitch.html?sessionId=${sessionId}",
+            cancelUrl: "https://paypal-ppcp.onrender.com/html/PP/appSwitch.html?sessionId=${sessionId}",
           },
         },
       },
