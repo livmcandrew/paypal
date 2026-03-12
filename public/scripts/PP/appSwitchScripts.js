@@ -46,7 +46,7 @@ const paypalButtons = window.paypal.Buttons({
    async onApprove(data, actions) {
         try {
             const response = await fetch(
-                `/api/orders/${data.orderID}/capture`,
+                `ppcheckout/api/orders/${data.orderID}/capture`,
                 {
                     method: "POST",
                     headers: {
