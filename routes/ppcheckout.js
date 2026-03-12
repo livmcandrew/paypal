@@ -41,75 +41,75 @@ const ordersController = new OrdersController(client);
 const paymentsController = new PaymentsController(client);
 
 
-/**
- * Create an order to start the transaction.
- */
-const createOrder = async (cart) => {
-   const collect = {
-        body: {
-            intent: "CAPTURE",
-            purchaseUnits: [
-                {
-                    amount: {
-                        currencyCode: "GBP",
-                        value: "100",
-                        breakdown: {
-                            itemTotal: {
-                                currencyCode: "GBP",
-                                value: "100",
-                            },
-                        },
-                    },
-                    // lookup item details in `cart` from database
-                    items: [
-                        {
-                            name: "T-Shirt",
-                            unitAmount: {
-                                currencyCode: "GBP",
-                                value: "100",
-                            },
-                            quantity: "1",
-                            description: "Super Fresh Shirt",
-                            sku: "sku01",
-                        },
-                    ],
-                },
-            ],
-        },
-        prefer: "return=minimal",
-    };
+// /**
+//  * Create an order to start the transaction.
+//  */
+// const createOrder = async (cart) => {
+//    const collect = {
+//         body: {
+//             intent: "CAPTURE",
+//             purchaseUnits: [
+//                 {
+//                     amount: {
+//                         currencyCode: "GBP",
+//                         value: "100",
+//                         breakdown: {
+//                             itemTotal: {
+//                                 currencyCode: "GBP",
+//                                 value: "100",
+//                             },
+//                         },
+//                     },
+//                     // lookup item details in `cart` from database
+//                     items: [
+//                         {
+//                             name: "T-Shirt",
+//                             unitAmount: {
+//                                 currencyCode: "GBP",
+//                                 value: "100",
+//                             },
+//                             quantity: "1",
+//                             description: "Super Fresh Shirt",
+//                             sku: "sku01",
+//                         },
+//                     ],
+//                 },
+//             ],
+//         },
+//         prefer: "return=minimal",
+//     };
    
 
-    try {
-        const { body, ...httpResponse } = await ordersController.createOrder(
-            collect
-        );
-        // Get more response info...
-        // const { statusCode, headers } = httpResponse;
-        return {
-            jsonResponse: JSON.parse(body),
-            httpStatusCode: httpResponse.statusCode,
-        };
-    } catch (error) {
-        if (error instanceof ApiError) {
-            // const { statusCode, headers } = error;
-            throw new Error(error.message);
-        }
-    }
-};
+//     try {
+//         const { body, ...httpResponse } = await ordersController.createOrder(
+//             collect
+//         );
+//         // Get more response info...
+//         // const { statusCode, headers } = httpResponse;
+//         return {
+//             jsonResponse: JSON.parse(body),
+//             httpStatusCode: httpResponse.statusCode,
+//         };
+//     } catch (error) {
+//         if (error instanceof ApiError) {
+//             // const { statusCode, headers } = error;
+//             throw new Error(error.message);
+//         }
+//     }
+// };
 
-// createOrder route
-router.post("/api/orders", async (req, res) => {
-    try {
-        // use the cart information passed from the front-end to calculate the order amount detals
-        const { cart } = req.body;
-        const { jsonResponse, httpStatusCode } = await createOrder(cart);
-        res.status(httpStatusCode).json(jsonResponse);
-    } catch (error) {
-        console.error("Failed to create order:", error);
-        res.status(500).json({ error: "Failed to create order." });
-    }
-});
+// // createOrder route
+// router.post("/api/orders", async (req, res) => {
+//     try {
+//         // use the cart information passed from the front-end to calculate the order amount detals
+//         const { cart } = req.body;
+//         const { jsonResponse, httpStatusCode } = await createOrder(cart);
+//         res.status(httpStatusCode).json(jsonResponse);
+//     } catch (error) {
+//         console.error("Failed to create order:", error);
+//         res.status(500).json({ error: "Failed to create order." });
+//     }
+// });
 
 
 /**
@@ -155,7 +155,7 @@ router.post("/api/orders/:orderID/capture", async (req, res) => {
 /**
  * Create an order for APP SWITCH to start the transaction.
  */
-const createOrderAppSwitch = async (cart) => {
+const createOrder = async (cart) => {
    const collect = {
         body: {
             intent: "CAPTURE",
@@ -206,7 +206,7 @@ const createOrderAppSwitch = async (cart) => {
    
 
     try {
-        const { body, ...httpResponse } = await ordersController.createOrderAppSwitch(
+        const { body, ...httpResponse } = await ordersController.createOrder(
             collect
         );
         // Get more response info...
@@ -228,7 +228,7 @@ router.post("/api/orders/appSwitch", async (req, res) => {
     try {
         // use the cart information passed from the front-end to calculate the order amount detals
         const { cart } = req.body;
-        const { jsonResponse, httpStatusCode } = await createOrderAppSwitch(cart);
+        const { jsonResponse, httpStatusCode } = await createOrder(cart);
         res.status(httpStatusCode).json(jsonResponse);
     } catch (error) {
         console.error("Failed to create order:", error);

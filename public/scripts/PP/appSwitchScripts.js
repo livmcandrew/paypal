@@ -10,7 +10,7 @@ const paypalButtons = window.paypal.Buttons({
     },
    async createOrder() {
         try {
-            const response = await fetch("/ppcheckout/api/orders/appSwitch", {
+            const response = await fetch("/ppcheckout/api/orders", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
