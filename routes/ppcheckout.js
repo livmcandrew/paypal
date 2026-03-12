@@ -206,7 +206,7 @@ const createOrderAppSwitch = async (cart) => {
    
 
     try {
-        const { body, ...httpResponse } = await ordersController.createOrder(
+        const { body, ...httpResponse } = await ordersController.createOrderAppSwitch(
             collect
         );
         // Get more response info...
