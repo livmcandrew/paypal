@@ -2,7 +2,7 @@ const paypalButtons = window.paypal.Buttons({
    style: {
         shape: "rect",
         layout: "vertical",
-        color: "gold",
+        color: "blue",
         label: "paypal",
     },
    message: {
@@ -10,7 +10,7 @@ const paypalButtons = window.paypal.Buttons({
     },
    async createOrder() {
         try {
-            const response = await fetch("/ppcheckout/api/orders", {
+            const response = await fetch("/api/orders", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -20,10 +20,11 @@ const paypalButtons = window.paypal.Buttons({
                 body: JSON.stringify({
                     cart: [
                         {
-                            id: "Cashmere Knitted Jumper",
-                            quantity: "1",
+                            id: "YOUR_PRODUCT_ID",
+                            quantity: "YOUR_PRODUCT_QUANTITY",
                         },
                     ],
+                    pref: prefEl.value
                 }),
             });
 
@@ -40,7 +41,7 @@ const paypalButtons = window.paypal.Buttons({
             throw new Error(errorMessage);
         } catch (error) {
             console.error(error);
-            resultMessage(`Could not initiate PayPal Checkout...<br><br>${error}`);
+            // resultMessage(`Could not initiate PayPal Checkout...<br><br>${error}`);
         }
     },
    async onApprove(data, actions) {
@@ -99,17 +100,15 @@ const paypalButtons = window.paypal.Buttons({
             );
         }
     },
-});
 
-if (paypalButtons.hasReturned()) {
-  paypalButtons.resume();
-} else {
-  paypalButtons.render("#paypal-button");
-}
+   
+});
+paypalButtons.render("#paypal-button-container");
+
 
 // Example function to show a result to the user. Your site's UI library can be used instead.
 function resultMessage(message) {
-     const container = document.querySelector("#result-message");
+    const container = document.querySelector("#result-message");
     container.innerHTML = "";
     container.innerHTML = message;
 }
