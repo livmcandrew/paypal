@@ -10,7 +10,7 @@ const paypalButtons = window.paypal.Buttons({
     },
    async createOrder() {
         try {
-            const response = await fetch("/api/orders/appSwitch", {
+            const response = await fetch("/ppcheckout/api/orders/appSwitch", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -40,7 +40,7 @@ const paypalButtons = window.paypal.Buttons({
             throw new Error(errorMessage);
         } catch (error) {
             console.error(error);
-            // resultMessage(`Could not initiate PayPal Checkout...<br><br>${error}`);
+            resultMessage(`Could not initiate PayPal Checkout...<br><br>${error}`);
         }
     },
    async onApprove(data, actions) {
