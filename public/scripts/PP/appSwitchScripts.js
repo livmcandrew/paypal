@@ -28,10 +28,13 @@ const paypalButtons = window.paypal.Buttons({
             });
 
             const orderData = await response.json();
+            console.log(orderData);
 
             if (orderData.id) {
                 return orderData.id;
             }
+            else{console.log(orderData)}
+            
             const errorDetail = orderData?.details?.[0];
             const errorMessage = errorDetail
                 ? `${errorDetail.issue} ${errorDetail.description} (${orderData.debug_id})`
