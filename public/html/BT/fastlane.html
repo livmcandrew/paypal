@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+    <script src="https://js.braintreegateway.com/web/3.137.0/js/three-d-secure.min.js"></script>
+     <!-- Braintree core client -->
+    <script src="https://js.braintreegateway.com/web/3.137.0/js/client.min.js"></script>
+    <!-- PayPal Checkout for Braintree -->
+    <script src="https://js.braintreegateway.com/web/3.137.0/js/paypal-checkout.min.js"></script>
+    <!-- FastLane Braintree -->
+    <script src="https://js.braintreegateway.com/web/3.137.0/js/client.min.js"></script>
+    <script src="https://js.braintreegateway.com/web/3.137.0/js/fastlane.js"></script>
+    <script src="https://js.braintreegateway.com/web/3.137.0/js/data-collector.min.js"></script>
+
+    <link rel="stylesheet" href="/styles/styles.css">
+    <script src="/scripts/BT/FLScripts.js" defer></script>
+    <title>Liv's Site</title>
+  </head>
+  
+  <nav class="navbar">
+      <div class="nav-logo"></div>
+      <ul class="nav-list" >
+        <a class="nav-links"  href="../../index.html">Home</a>
+        <a class="nav-links"  href="dropInUI.html"> Drop-In UI</a>
+        <a class="nav-links"  href="VaultingNewCust.html">Vaulting</a>
+        <a class="nav-links"  href="hostedFields.html"> Hosted Fields</a>
+      </ul>
+  </nav>
+  <body>
+    <div class="box" id="demo-frame">
+      <h2>Checkout with Fast Lane</h2>
+      <main class="page">
+      <div class="checkout-card" id="checkout-message"> 
+      <div class="heading">CHECKOUT</div>
+      
+      <div class="basket">
+        <img class="item-image" src="/images/jumper.jpeg"> 
+        <div class="purchase">
+          <div class="item-text">Cashmere Knitted Jumper</div>
+          <div class="item-subtext">S | Black</div>
+        </div>
+        <div class="purchase-price">
+          <div class="item-price">£100</div>
+        </div>
+      </div>
+  
+          <div class="payment-actions">
+            
+          </div>
+          <form id="FL-form" class="FL-form">
+            
+            <!-- Email Input-->
+            <section id="customer-input">
+              <b>Enter your email</b><br><br>
+              <input class="email-button" id="email" name="email" type="email" required><br>
+              <div id="watermark-container" class="FL-image">
+                <img src="https://www.paypalobjects.com/fastlane-v1/assets/fastlane-with-tooltip_en_sm_light.0808.svg" />
+              </div><br>
+              <button id="email-submit-button" type="button" class="pay-button"> Continue</button>
+            </section>
+
+            <!-- Email Found-->
+            <section id="customer" hidden>
+              <div class="FL-heading">Customer</div><br><br>
+              <div class="summary"></div><br><br>
+              <!-- add a button -->
+              <hr>
+            </section>
+          
+            <!-- Shipping -->
+            <section id="shipping" hidden>
+              <br><div class="FL-heading">Shipping Details</div><br><br>
+              <div class="summary"></div><br><br>
+              <!-- add a button -->
+              <hr>
+            </section>
+
+            <!-- Payment-->
+             <section id="payment" hidden>
+              <br><div class="FL-heading">Payment Method</div><br>
+              <img src="https://www.paypalobjects.com/fastlane-v1/assets/cc_visa_light.0a3a.svg" alt="VISA credit card" style="height:45px;width:30px;float:left;padding-right:10px;">  
+              <div id="selected-card" class="summary" style="width:40%;padding-top:10px;"></div><br>
+              <!-- add a button -->
+              <div id="watermark-container">
+                <img src="https://www.paypalobjects.com/fastlane-v1/assets/fastlane-with-tooltip_en_sm_light.0808.svg" />
+              </div><br><br>
+              <button id="pay-submit-button" type="button" class="pay-button"> Pay</button><br><br>
+            </section>
+
+            <!-- Completed Payment-->
+            <section id="complete" hidden>
+              <br><div class="FL-heading">Purchase successfully complete</div><br><br>
+              <div class="summary"></div><br><br>
+              <button id="exit-submit-button" type="button" class="pay-button"> Make Another Payment</button><br><br>
+            </section>
+
+          </form>
+          
+          <div id="result-message"> </div>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

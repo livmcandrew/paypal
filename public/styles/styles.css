@@ -218,22 +218,6 @@ h3{
   justify-content: center; 
 }
 
-/* Your custom button */
-/* .pay-button {
-  max-width: 760px;
-  width:100%;
-  height:60px;
-  border-radius:4px;
-  background:#000;
-  color:#fff;
-  border:none;
-  font-weight:700;
-  cursor:pointer;
-  box-shadow:0 6px 18px rgba(0,0,0,0.08);
-  text-align:center;
-} */
-
-
 .pay-button{
   width: 100%;
     max-width: 650px;
@@ -244,11 +228,30 @@ h3{
     cursor: pointer;
     background: black;
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
-    display: flex;
+    /*display: flex;*/
     align-items: center;
     justify-content: center;
     text-align:center;
     color:white;
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif
+}
+
+
+.input-button{
+    width: 80%;
+    max-width: 650px;
+    border: 4px;
+    height:40px;
+    border-radius: 12px;
+    padding: 14px 16px;
+    cursor: pointer;
+    background: white;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align:center;
+    color:black;
     font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif
 }
 
@@ -355,4 +358,44 @@ hr {
 .vaulted-arrow {
   opacity: 0.6;
   font-size: 18px;
+}
+
+
+/** Fast Lane ***/
+
+.FL-form{
+  max-width: 650px;
+  display:flex;
+  flex-direction:column;
+  padding-left: 20px
+}
+
+.email-button{
+    width: 95%;
+    max-width: 650px;
+    border: 4px;
+    height:40px;
+    border-radius: 12px;
+    padding: 14px 16px;
+    cursor: pointer;
+    background: white;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+    display: flex;
+    align-items: left;
+    justify-content: center;
+    color:black;
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif
+}
+
+.FL-image{
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding-right: 20px;
+}
+
+.FL-heading{
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-size: 28px;
+  font-weight: bold;
 }

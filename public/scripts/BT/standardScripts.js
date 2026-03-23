@@ -41,13 +41,6 @@ async function transactionPaymentNonce(payload, setAmount) {
   }
 };
 
-// Apple Pay
-function showMessage(text, success = true) { 
-  const messageBox = document.getElementById('result-message'); 
-  messageBox.textContent = text; 
-  messageBox.style.color = success ? 'green' : 'red'; 
-} 
-
 fetch("/btcheckout")
     .then((response) => {
         return response.text();

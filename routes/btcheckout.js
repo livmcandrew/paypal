@@ -72,7 +72,7 @@ router.post("/",  express.json(), (req, res) => {
 });
 
 // GET transcation.sale API with AFT params to make sale 
-router.post("/AFTsale", (req, res) => {
+router.post("/AFTsale",  express.json(), (req, res) => {
   const { paymentMethodNonce, deviceData, amount } = req.body;
 
   gateway.transaction.sale(
@@ -135,24 +135,69 @@ router.post("/AFTsale", (req, res) => {
   );
 });
 
+// GET transcation.sale API to make sale for Fast Lane
+router.post("/FL/transaction",  express.json(), (req, res) => {
+  console.log('POST /FL/transaction hit');
+  
+  const { paymentToken, deviceData, amount, name, email, shippingAddress } = req.body;
+
+  try {
+     gateway.transaction.sale(
+      {
+        amount,
+        paymentMethodNonce: paymentToken?.id,
+        deviceData,
+        customer: {
+          ...name,
+          email,
+        },
+        billing: {
+          ...(paymentToken?.paymentSource?.card?.billingAddress || {}),
+        },
+        ...(shippingAddress && {
+          shipping: {
+            ...shippingAddress,
+            shippingMethod: 'ground',
+          },
+        }),
+        options: {
+          submitForSettlement: true,
+        },
+      },
+      (error, result) => {
+        if (error) {
+          console.error('transaction.sale error:', error);
+          return res.status(500).json({ error: error.message });
+        }
+
+        console.log('transaction.sale result:', result.success);
+        res.json({ result });
+      }
+    );
+  } catch (error) {
+    console.error('route threw:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // GET Token API to reteive client customer token {for vaulted PayPal payments}
 router.post("/client_cust_token", express.json(), (req, res) => {
   const { customerId } = req.body;
 
-  gateway.clientToken.generate(
-    { customerId, 
-      merchantAccountId: "liv_gbp"
-     },
-    (err, response) => {
-      if (err) {
-        console.error("client customer token error:", err);
-        return res.status(500).send({ error: err.message || err });
-      }
+  gateway.clientToken.generate({
+    customerId, 
+    merchantAccountId: "liv_gbp"
+  },
+  (err, response) => {
+    if (err) {
+      console.error("client customer token error:", err);
+      return res.status(500).send({ error: err.message || err });
+    }
 
-      res.send(response.clientToken); //returns Client Customer Token
-      console.log("Inside Returning Customer flow");
-      // console.log("customerId received:", customerId);
-      // console.log("clientToken exists:", !!response?.clientToken);
+    res.send(response.clientToken); //returns Client Customer Token
+    console.log("Inside Returning Customer flow");
+    // console.log("customerId received:", customerId);
+    // console.log("clientToken exists:", !!response?.clientToken);
     }
   );
 });
