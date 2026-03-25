@@ -159,13 +159,6 @@ fetch("/btcheckout")
             //look up customer
             const { customerContextId } = await identity.lookupCustomerByEmail(email);
             console.log('lookup result:', customerContextId);
-            
-            // update HTML page with the FL customers values
-            customerSection.hidden = false;
-            customerInput.hidden = true;
-            shippingSection.hidden = false;
-            paymentSection.hidden = false;
-            customerSection.querySelector('.summary').innerText = email;
 
             // Email is associated with a Fastlane member or a PayPal member, 
             // send customerContextId to trigger the authentication flow.
@@ -190,6 +183,13 @@ fetch("/btcheckout")
                 renderFastlaneMemberExperience = false;
                 console.log('No customerContextId');
             }
+
+            // update HTML page with the FL customers values
+            customerSection.hidden = false;
+            customerInput.hidden = true;
+            shippingSection.hidden = false;
+            paymentSection.hidden = false;
+            customerSection.querySelector('.summary').innerText = email;
       
             //if shipping found add the address
             if (shippingAddress) {
