@@ -56,6 +56,7 @@
             <section id="customer-input">
               <b>Enter your email</b><br><br>
               <input class="email-button" id="email" name="email" type="email" required><br>
+              <!-- FastLane Image -->
               <div id="watermark-container" class="FL-image">
                 <img src="https://www.paypalobjects.com/fastlane-v1/assets/fastlane-with-tooltip_en_sm_light.0808.svg" />
               </div><br>
@@ -66,28 +67,129 @@
             <section id="customer" hidden>
               <div class="FL-heading">Customer</div><br><br>
               <div class="summary"></div><br><br>
-              <!-- add a button -->
               <hr>
             </section>
           
             <!-- Shipping -->
             <section id="shipping" hidden>
-              <br><div class="FL-heading">Shipping Details</div><br><br>
+              <br><div class="FL-heading">Shipping Details</div>
+              <button id="edit-shipping-button" type="button" class="edit-button"> 
+                <span class="button-icon"></span>Edit
+              </button>
+              <br><br>
               <div class="summary"></div><br><br>
-              <!-- add a button -->
+
+              <!--- Shipping info For New customer -->
+              <fieldset hidden>
+                <span>
+                  <input id="shipping-required-checkbox" name="shipping-required" type="checkbox" checked />
+                  <label for="shipping-required-checkbox" class="checkbox-label">
+                    This purchase requires shipping
+                  </label>
+                </span>
+                <div class="form-row">
+                  <div class="form-group">
+                    <input required id="given-name" maxlength="255" name="given-name" placeholder="First name"
+                      autocomplete="given-name" />
+                    <label for="given-name" class="FL-label">First Name</label>
+                  </div>
+                  <div class="form-group">
+                    <input required id="family-name" maxlength="255" name="family-name" placeholder="Last name"
+                      autocomplete="family-name" />
+                    <label for="family-name" class="FL-label">Last Name</label>
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <input id="company" name="company" maxlength="255" placeholder="Company name (optional)"
+                      autocomplete="organization" />
+                    <label for="company" class="FL-label">
+                      Company name (optional)
+                    </label>
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <input required id="shipping-address-line1" maxlength="255" name="shipping-address-line1"
+                      placeholder="Street address" autocomplete="address-line1" placeholder="Address Line 1" />
+                    <label for="shipping-address-line1" class="FL-label">
+                      Address Line 1
+                    </label>
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <input id="shipping-address-line2" maxlength="255" name="shipping-address-line2"
+                      placeholder="Apt., ste., bldg. (optional)" autocomplete="address-line2" />
+                    <label for="shipping-address-line2" class="FL-label">
+                      Apt., ste, bldg. (optional)
+                    </label>
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <input required id="shipping-address-level2" maxlength="255" name="shipping-address-level2"
+                      autocomplete="address-level2" placeholder="City" />
+                    <label for="shipping-address-level2" class="FL-label">City</label>
+                  </div>
+                  <div class="form-group">
+                    <input required id="address-level1" maxlength="255" name="shipping-address-level1" placeholder="State"
+                      autocomplete="address-level1" />
+                    <label for="address-level1" class="FL-label">State</label>
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <input required pattern="\d{5}(-\d{4})?"
+                      title="The ZIP code must have the one of the following formats: 12345 or 12345-6789"
+                      id="shipping-postal-code" name="shipping-postal-code" placeholder="ZIP code" autocomplete="postal-code" />
+                    <label for="shipping-postal-code" class="FL-label">ZIP Code</label>
+                  </div>
+                  <div class="form-group">
+                    <input required pattern="US" minlength="2" maxlength="2" title="Currently only available to the US"
+                      id="shipping-country" name="shipping-country" placeholder="Country" autocomplete="country" />
+                    <label for="shipping-country" class="FL-label">
+                      Country (eg. US, UK)
+                    </label>
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <input pattern="([0-9]{1,3})?" title="Please enter a valid country calling code with 1 to 3 digits"
+                      minlength="1" maxlength="3" id="tel-country-code" name="tel-country-code"
+                      placeholder="Country calling code" autocomplete="tel-country-code" />
+                    <label for="tel-country-code" class="FL-label">
+                      Country calling code
+                    </label>
+                  </div>
+                  <div class="form-group">
+                    <input pattern="([0-9]{10})?"
+                      title="Please enter a valid US phone number like (123) 456-7890, type only numbers" id="tel-national"
+                      name="tel-national" type="tel" placeholder="Phone number" autocomplete="tel-national" />
+                    <label for="tel-national" class="FL-label">Phone Number</label>
+                  </div>
+                </div>
+                <button id="shipping-submit-button" type="button" class="submit-button">
+                Continue
+              </button>
+              </fieldset>
               <hr>
             </section>
 
             <!-- Payment-->
              <section id="payment" hidden>
               <br><div class="FL-heading">Payment Method</div><br>
-              <img src="https://www.paypalobjects.com/fastlane-v1/assets/cc_visa_light.0a3a.svg" alt="VISA credit card" style="height:45px;width:30px;float:left;padding-right:10px;">  
+               <button id="edit-payment-button" type="button" class="edit-button"> 
+                <span class="button-icon"></span>Edit
+              </button>
+              <img src="https://www.paypalobjects.com/fastlane-v1/assets/cc_visa_light.0a3a.svg" alt="VISA credit card" id="visa-image" style="height:45px;width:30px;float:left;padding-right:10px;" hidden>  
               <div id="selected-card" class="summary" style="width:40%;padding-top:10px;"></div><br>
-              <!-- add a button -->
+              <!-- FastLane Image -->
               <div id="watermark-container">
                 <img src="https://www.paypalobjects.com/fastlane-v1/assets/fastlane-with-tooltip_en_sm_light.0808.svg" />
               </div><br><br>
               <button id="pay-submit-button" type="button" class="pay-button"> Pay</button><br><br>
+               <button id="cancel-submit-button" type="button" class="pay-button"> Cancel </button><br><br>
             </section>
 
             <!-- Completed Payment-->
@@ -96,6 +198,7 @@
               <div class="summary"></div><br><br>
               <button id="exit-submit-button" type="button" class="pay-button"> Make Another Payment</button><br><br>
             </section>
+
 
           </form>
           

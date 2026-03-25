@@ -61,10 +61,14 @@ fetch("/btcheckout")
     * ###################################################################### */
 
     //get the values from UI 
+    const form = document.getElementById('FL-form');
     const emailSubmitButton = document.getElementById('email-submit-button');
     const paySubmitButton = document.getElementById('pay-submit-button');
     const newPaySubmitButton = document.getElementById('exit-submit-button');
-    const form = document.getElementById('FL-form');
+    const cancelButton = document.getElementById('cancel-submit-button');
+    const editShipping = document.getElementById('edit-shipping-button');
+    const editPayment = document.getElementById('edit-payment-button');
+    
     const emailInput = document.getElementById('email');
     const shippingSection = document.getElementById('shipping');
     const paymentSection = document.getElementById('payment');
@@ -72,6 +76,7 @@ fetch("/btcheckout")
     const completeSection = document.getElementById('complete');
     const customerInput = document.getElementById('customer-input');
     let email, name, shippingAddress, paymentToken, billingAddress;
+    let shippingFound, paymentFound = false;
 
     //check the specific inputs fields in form  are valid using built-in browser validation
     const validateFields = (form, fields = []) => {
@@ -118,10 +123,17 @@ fetch("/btcheckout")
       return summary.filter(isNotEmpty).join('\n');
     };
 
-    //Set Shipping Address to the html page using define structre
+    //Set Shipping Address to display in the HTML page using define structre
     const setShippingSummary = (address) => {
       shippingSection.querySelector('.summary').innerText =
         getAddressSummary(address);
+    };
+
+    //Set the Payment Method to display in the HTML page
+    const setPaymentSummary = (paymentToken) => {
+      document.getElementById('selected-card').innerText = paymentToken
+        ? ` •••• ${paymentToken.paymentSource.card.lastDigits}`
+        : '';
     };
 
     /* ######################################################################
@@ -147,6 +159,13 @@ fetch("/btcheckout")
             //look up customer
             const { customerContextId } = await identity.lookupCustomerByEmail(email);
             console.log('lookup result:', customerContextId);
+            
+            // update HTML page with the FL customers values
+            customerSection.hidden = false;
+            customerInput.hidden = true;
+            shippingSection.hidden = false;
+            paymentSection.hidden = false;
+            customerSection.querySelector('.summary').innerText = email;
 
             // Email is associated with a Fastlane member or a PayPal member, 
             // send customerContextId to trigger the authentication flow.
@@ -162,7 +181,6 @@ fetch("/btcheckout")
                     shippingAddress = profileData.shippingAddress;
                     paymentToken = profileData.card;
                     billingAddress = paymentToken?.paymentSource.card.billingAddress;
-                    console.log('Profile Data:',profileData)
                 } else {
                     // Member failed or cancelled to authenticate. Treat them as a guest payer
                     renderFastlaneMemberExperience = false;
@@ -172,30 +190,33 @@ fetch("/btcheckout")
                 renderFastlaneMemberExperience = false;
                 console.log('No customerContextId');
             }
-
-            // update HTML page with the FL customers values
-            customerSection.hidden = false;
-            customerInput.hidden = true;
-            shippingSection.hidden = false;
-            paymentSection.hidden = false;
-            customerSection.querySelector('.summary').innerText = email;
-
+      
             //if shipping found add the address
             if (shippingAddress) {
                 setShippingSummary(shippingAddress);
-                console.log(shippingAddress);
-                //shippingSection.querySelector('.summary').innerText = shippingAddress;
+                shippingFound = true;
             } else{
-                console.log("shipping NOT FOUND");
+                shippingSection.querySelector('fieldset').hidden = false;
+                editShipping.hidden = true;
+                //shippingSection.querySelector('.summary').innerText = "No shipping information found";
             }
 
             //if payment Token found add the payment Method
             if (paymentToken){
-                document.getElementById('selected-card').innerText = paymentToken
-                ? ` •••• ${paymentToken.paymentSource.card.lastDigits}`
-                : '';
+                setPaymentSummary(paymentToken);
+                paymentFound = true;
+                paymentSection.querySelector('#visa-image').hidden = false;
             } else {
-                console.log("payment Method NOT FOUND");
+                paymentSection.querySelector('.summary').innerText = "No payment information found";
+            }
+
+            //validation
+            console.log("payment found =", paymentFound);
+            console.log("shipping found =", shippingFound);
+
+            if (!paymentFound || !shippingFound){
+                paySubmitButton.setAttribute('disabled', '');
+                console.log("Missing payment or shipping → disabling button");
             }
 
         } catch (err) {
@@ -204,15 +225,38 @@ fetch("/btcheckout")
             emailSubmitButton.removeAttribute('disabled');
         }
     });
+
+    //Listener for Edit Shipping Address
+    editShipping.addEventListener('click', async() =>{
+        const { selectionChanged, selectedAddress } = 
+            await profile.showShippingAddressSelector();    //opens FastLane Shipping address selector
+        
+        if (selectionChanged){
+            shippingAddress = selectedAddress
+            setShippingSummary(shippingAddress); //display on HTML
+            console.log(shippingAddress);
+        }
+
+    });
+
+    //Listener for Edit Payment Method
+    editPayment.addEventListener('click', async() =>{
+        const { selectionChanged, selectedCard } = 
+            await profile.showCardSelector();    //opens FastLane payment Method selector
+        
+        if (selectionChanged){
+            paymentToken = selectedCard 
+            setPaymentSummary(paymentToken);  //display on HTML
+            console.log(paymentToken);
+        }
+
+    });
     
     //Listener for Payment Button
     paySubmitButton.addEventListener('click', async (e) => {
         e.preventDefault();
 
         try {
-            console.log('button clicked');
-            console.log('billingAddress before token:', billingAddress);
-
             if (paymentToken){
                 console.log('Payment token:', paymentToken);
 
@@ -252,11 +296,29 @@ fetch("/btcheckout")
         }
     });
 
+    //Lister for Cancel Button
+    cancelButton.addEventListener('click', async (e) => {
+        customerSection.hidden = true;
+        customerInput.hidden = false;
+        shippingSection.hidden = true;
+        paymentSection.hidden = true;
+        emailInput.value = "";
+        name = null;
+        shippingAddress = null;
+        paymentToken = null;
+        billingAddress = null;
+        console.log("FastLane cancelled");
+    });
+
     //Listener for new Payment Button
     newPaySubmitButton.addEventListener('click', async (e) => {
         //Update UI with completed purchase
             customerInput.hidden = false;
             completeSection.hidden = true;
             emailInput.value = "";
+            name = null;
+            shippingAddress = null;
+            paymentToken = null;
+            billingAddress = null;
     });
 });
