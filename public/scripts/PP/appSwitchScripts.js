@@ -102,6 +102,8 @@ const paypalButtons = window.paypal.Buttons({
             );
         }
     },
+    
+    appSwitchWhenAvailable: true
 });
 
 if (paypalButtons.hasReturned()) {
