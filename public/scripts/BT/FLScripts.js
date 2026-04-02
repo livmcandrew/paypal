@@ -189,6 +189,7 @@ fetch("/btcheckout")
             customerInput.hidden = true;
             shippingSection.hidden = false;
             paymentSection.hidden = false;
+            shippingSection.querySelector('fieldset').hidden = true;
             customerSection.querySelector('.summary').innerText = email;
       
             //if shipping found add the address
