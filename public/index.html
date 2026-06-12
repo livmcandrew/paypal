@@ -4,7 +4,6 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script src="https://js.braintreegateway.com/web/dropin/1.31.2/js/dropin.min.js"></script>
     <link rel="stylesheet" href="/styles/styles.css">
     
     <title>Liv's Test Shop</title>
@@ -72,6 +71,12 @@
     </div>
 
     <div class="item">
+      <form action="html/BT/authorisePayment.html" method="GET">
+        <button class="feature-button" type="submit">Authorise Payment</button>
+      </form>
+    </div>
+
+    <div class="item">
       <form action="html/BT/AFT.html" method="GET">
         <button class="feature-button" type="submit">AFT</button>
       </form>
@@ -86,6 +91,18 @@
     <div class="item">
       <form action="html/BT/fastlane.html" method="GET">
         <button class="feature-button" type="submit">Fast Lane</button>
+      </form>
+    </div>
+
+    <div class="item">
+      <form action="html/PP/sdkv6.html" method="GET">
+        <button class="pfeature-button" type="submit">JS SDK v6</button>
+      </form>
+    </div>
+
+    <div class="item">
+      <form action="html/PP/nosdk.html" method="GET">
+        <button class="pfeature-button" type="submit">no JS SDK</button>
       </form>
     </div>
 

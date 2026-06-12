@@ -24,6 +24,7 @@ router.post("/sessions", async (req, res) => {
 
   const data = await response.json();
   res.status(response.status).json(data);
+  console.log(data);
 });
 
 module.exports = router;

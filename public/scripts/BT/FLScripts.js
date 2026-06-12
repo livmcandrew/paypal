@@ -92,7 +92,7 @@ fetch("/btcheckout")
         }
         return valid;
     };
-
+ 
     // Define Shipping Address structure
     const getAddressSummary = ({
       firstName,

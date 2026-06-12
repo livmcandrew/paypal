@@ -71,6 +71,52 @@ router.post("/",  express.json(), (req, res) => {
   );
 });
 
+// GET transcation.sale API to AUTH sale
+router.post("/auth",  express.json(), (req, res) => {
+  const { paymentMethodNonce, deviceData, amount, storeInVault } = req.body;
+
+  gateway.transaction.sale(
+    {
+      deviceData,
+      paymentMethodNonce,
+      amount,
+      merchantAccountId: "liv_gbp",
+      options: {
+        //submitForSettlement: true,
+        storeInVaultOnSuccess: !!storeInVault, // vault only when asked
+      },
+    },
+    (error, result) => {
+      if (error || !result?.success) {
+        return res.status(500).send({
+          success: false,
+          error: error?.message || result?.message || error,
+          result,
+        });
+      }
+
+      // For vaulted payments - stores values in storage
+      const paymentMethodToken =
+        result.transaction?.creditCard?.token ||
+        result.transaction?.paypalAccount?.token ||
+        null;
+
+      const customerId =
+        result.transaction?.customer?.id ||
+        result.transaction?.customerId ||
+        null;
+
+      return res.send({
+        success: true,
+        transactionId: result.transaction.id,
+        paymentMethodToken,
+        customerId,
+        result,
+      });
+    }
+  );
+});
+
 // GET transcation.sale API with AFT params to make sale 
 router.post("/AFTsale",  express.json(), (req, res) => {
   const { paymentMethodNonce, deviceData, amount } = req.body;
@@ -140,7 +186,7 @@ router.post("/FL/transaction",  express.json(), (req, res) => {
   console.log('POST /FL/transaction hit');
   
   const { paymentToken, deviceData, amount, name, email, shippingAddress } = req.body;
-
+ 
   try {
      gateway.transaction.sale(
       {

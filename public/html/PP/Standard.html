@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <!-- Load the PayPal JS SDK with your PayPal Client ID-->
     <script
-      src="https://www.paypal.com/sdk/js?client-id=AVGqIc8hFJ_fclr98apdzfSRMvn-G3RRRAqeSMbFP1lnDG-SghtB2sXeMEmDB4lKtsuF1Onn-CquEc_5&buyer-country=GB&currency=GBP&components=messages,buttons"
+      src="https://www.paypal.com/sdk/js?client-id=AVGqIc8hFJ_fclr98apdzfSRMvn-G3RRRAqeSMbFP1lnDG-SghtB2sXeMEmDB4lKtsuF1Onn-CquEc_5&buyer-country=GB&currency=GBP&components=messages,buttons,card-fields"
       data-sdk-integration-source="developer-studio"
     ></script>
 
@@ -46,17 +46,29 @@
             </div>
           </div>
           <h1>Card Payment</h1>
-          
-
+           <div id="paypal-button-container" class="paypal-button-container"></div>
+            <!-- Containers for Card Fields hosted by PayPal -->
+            <div id="card-form" class="card_container">
+                <div id="card-name-field-container"></div>
+                <div id="card-number-field-container"></div>
+                <div id="card-expiry-field-container"></div>
+                <div id="card-cvv-field-container"></div>
+            </div>    
+           <button class="pay-button" id="card-field-submit-button" type="button">
+                Pay now with Card
+            </button>
           <div id="paypal-button"></div>
           <div
               data-pp-message
+              data-pp-style-text-align="left"
+              data-pp-style-logo-position="left"
+              data-pp-style-ratio="20x1"
               data-pp-style-layout="text"
-              data-pp-style-logo-type="inline"
-              data-pp-style-text-color="black"
-              data-pp-style-text-size="12"
-              data-pp-amount="100"
-              data-pp-placement=product>
+              data-pp-style-logo-type="primary"
+              data-pp-style-text-color="#333333"
+              data-pp-style-text-size="14"
+              data-pp-style-color="#333333"
+              >
           </div>
           <p id="result-message"></p>
         </div>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <link rel="stylesheet" href="/styles/styles.css">
+    <title>Liv's Site</title>
+  </head>
+
+  <body>
+    <nav class="navbar">
+      <div class="nav-logo"></div>
+      <ul class="nav-list" >
+        <a class="nav-links"  href="../../index.html">Home</a>
+        <a class="nav-links"  href="Advanced.html">Advanced Checkout</a>
+        <a class="nav-links"  href="Partner.html">Partner Checkout</a>
+        <a class="nav-links"  href="appSwitch.html">App Switch</a>
+      </ul>
+    </nav>
+
+    <div class="box" id="demo-frame">
+      <h2>Standard Checkout</h2>
+      <main class="page">
+        <div class="checkout-card" id="checkout-message"> 
+          <div class="heading">CHECKOUT</div>
+          
+          <div class="basket">
+            <img class="item-image" src="/images/jumper.jpeg"> 
+            <div class="purchase">
+              <div class="item-text">Cashmere Knitted Jumper</div>
+              <div class="item-subtext">S | Black</div>
+            </div>
+            <div class="purchase-price">
+              <div class="item-price">£100</div>
+            </div>
+          </div>
+          <h1>Card Payment</h1>
+          <paypal-button id="paypal-button" type="pay,pay"></paypal-button>  
+           
+          </button>
+          <p id="result-message"></p>
+        </div>
+      </main>
+    </div>
+  </body>
+  <!-- Load the PayPal JS SDK with your PayPal Client ID-->
+  <script src="https://www.sandbox.paypal.com/web-sdk/v6/core"></script>
+  <script src="/scripts/PP/sdk6Scripts.js"></script>
+</html>

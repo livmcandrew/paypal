@@ -1,7 +1,7 @@
 //Client Side implementation 
 var submitButton = document.getElementById("submit-button");
 var paypalButton = document.getElementById("paypal-button");
-const setAmount = "150.00";
+const setAmount = "100.00";
 var threeDSecureParameters = {
     amount: setAmount,
     email: "test@example.com",
@@ -20,7 +20,8 @@ var threeDSecureParameters = {
 // Call 'payload.nonce' to your server
 async function transactionPaymentNonce(payload, setAmount) {
   try {
-    const response = await fetch("/btcheckout", {
+    console.log("Initiating Auth transaction:");
+    const response = await fetch("/btcheckout/auth", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -46,63 +47,6 @@ fetch("/btcheckout")
         return response.text();
     })
 .then((client_token) => {
-    //Drop in - CARDS 
-    braintree.dropin.create(
-    {
-        // https://braintree.github.io/braintree-web-drop-in/docs/current/module-braintree-web-drop-in.html#.create
-        authorization: client_token,
-        container: "#dropin-container",
-        dataCollector: true,
-        amount: setAmount,
-        merchantAccountId: "liv_gbp",
-        // vault: { allowVaultCardOverride: true },
-        threeDSecure: { authorization: client_token, version: 2 },
-    },
-    (componentError, instance) => {
-        if (componentError) {
-            console.log(componentError);
-        }
-        submitButton.addEventListener("click", (e) => {
-        e.preventDefault();
-        instance.requestPaymentMethod({
-                threeDSecure: threeDSecureParameters },(
-                    ReqPayMethodError, payload) => {
-                        fetch("/btcheckout", {
-                            method: "POST",
-                            headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify({
-                            paymentMethodNonce: payload.nonce,
-                            //deviceData: deviceData,
-                            amount: setAmount
-                        })
-                    })
-                    .then((response) => response.json())
-                    .then((result) => {
-                    instance.teardown((teardownErr) => {
-                        if (teardownErr) {
-                        console.error("Could not tear down Drop-in UI!");
-                        } else {
-                        console.info("Drop-in UI has been torn down!");
-                        }
-                    });
-                    if (result.success) {
-                        document.getElementById("result-message").innerHTML = 
-                        "<pre>Transaction successful\n\n" +
-                        JSON.stringify(result, null, 4) +
-                        "</pre>";
-                    } else {
-                        document.getElementById("result-message").innerHTML = 
-                        "<pre>Transaction failed\n\n" +
-                        JSON.stringify(result, null, 4) +
-                        "</pre>";
-                    }
-                });
-            }
-        );
-        });
-    }
-    );
-
     // Create a client.
     braintree.client.create({
         authorization: client_token
@@ -122,7 +66,7 @@ fetch("/btcheckout")
                     // Base PayPal SDK script options
                     var loadPayPalSDKOptions = {
                         currency: 'GBP',  // Must match the currency passed in with createPayment
-                        intent: 'capture', // Must match the intent passed in with createPayment
+                        intent: 'authorize', // Must match the intent passed in with createPayment
                         components: 'buttons,messages',
                         commit: true,
                         'enable-funding': 'paylater',
@@ -153,7 +97,7 @@ fetch("/btcheckout")
                             createOrder: function () {
                             var createPaymentRequestOptions = {
                                 flow: 'checkout', // Required
-                                intent: 'capture',
+                                intent: 'authorize',
                                 currency: 'GBP',
                                 amount: setAmount,
                                 //userAction: 'CONTINUE'

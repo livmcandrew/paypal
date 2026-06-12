@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <link rel="stylesheet" href="/styles/styles.css">
+    <script src="/scripts/PP/nosdk.js" defer></script>
+    <title>Liv's Site</title>
+  </head>
+
+  <body>
+    <nav class="navbar">
+      <div class="nav-logo"></div>
+      <ul class="nav-list" >
+        <a class="nav-links"  href="../../index.html">Home</a>
+        <a class="nav-links"  href="Advanced.html">Advanced Checkout</a>
+        <a class="nav-links"  href="Partner.html">Partner Checkout</a>
+        <a class="nav-links"  href="appSwitch.html">App Switch</a>
+      </ul>
+    </nav>
+
+    <div class="box" id="demo-frame">
+      <h2>Standard Checkout with no JD SDK and 3DS Passthrough</h2>
+      <main class="page">
+        <div class="checkout-card" id="checkout-message"> 
+          <div class="heading">CHECKOUT</div>
+          
+          <div class="basket">
+            <img class="item-image" src="/images/jumper.jpeg"> 
+            <div class="purchase">
+              <div class="item-text">Cashmere Knitted Jumper</div>
+              <div class="item-subtext">S | Black</div>
+            </div>
+            <div class="purchase-price">
+              <div class="item-price">£100</div>
+            </div>
+          </div>
+          
+          <div class="card-form-wrap">
+              <h1>Card Payment</h1>
+
+              <!-- Form Fields -->
+              <div class="form-group" id="nameGroup">
+                <label for="cardName">Cardholder name</label>
+                <input type="text" id="cardName" placeholder="Jane Smith" maxlength="26" autocomplete="cc-name" />
+                <div class="error-msg">Please enter the name on your card.</div>
+              </div>
+
+              <div class="form-group" id="numberGroup">
+                <label for="cardNumber">Card number</label>
+                <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19" autocomplete="cc-number" inputmode="numeric" />
+                <div class="error-msg">Enter a valid 16-digit card number.</div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group" id="expiryGroup">
+                  <label for="cardExpiry">Expiry date (MM / YY)</label>
+                  <input type="text" id="cardExpiry" placeholder="MM / YY" maxlength="7" autocomplete="cc-exp" inputmode="numeric" />
+                  <div class="error-msg">Enter a valid expiry (MM / YY).</div>
+                </div>
+                <div class="form-group" id="cvvGroup">
+                  <label for="cardCvv">CVV</label>
+                  <div class="cvv-wrap">
+                    <input type="text" id="cardCvv" placeholder="123" maxlength="4" autocomplete="cc-csc" inputmode="numeric" />
+                    <i class="ti ti-help-circle cvv-icon" aria-label="3 or 4 digits on back of card"></i>
+                  </div>
+                  <div class="error-msg">Enter the 3–4 digit CVV.</div>
+                </div>
+              </div>
+           <button class="submit-btn" id="payBtn">Pay now</button>
+           </div>
+          
+          <p id="result-message"></p>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>
