@@ -94,6 +94,15 @@ async function createOrderCallback() {
 // Example: hook it into your submit button
 document.getElementById('payBtn').addEventListener('click', () => {
     createOrderCallback();
+
+    //clear form after submission
+    document.getElementById('cardName').value = '';
+    document.getElementById('cardNumber').value = '';
+    document.getElementById('cardExpiry').value = '';
+    document.getElementById('cardCvv').value = '';
+
+    //add message saying "transaction in process" or something similar
+    resultMessage("Processing transaction...");
 });
 
 //write response to HTML page
