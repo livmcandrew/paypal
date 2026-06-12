@@ -39,6 +39,9 @@ const threeDSResult = {
 //random invoice id 
 const invoiceId = `INV-${Math.random().toString(36).substring(2, 15)}`;
 
+//get reset button 
+const resetBtn = document.getElementById('resetBtn');
+
 //then call the order api with threeDSResult and getCardData. 
 async function createOrderCallback() {
     try {
@@ -74,6 +77,9 @@ async function createOrderCallback() {
         const orderData = await response.json();
         console.log("Order created successfully:", orderData);
         resultMessage(`Order created successfully! Order ID: ${orderData.id}`);
+
+        //un hide reset button after successful transaction
+        resetBtn.hidden = false;
         if (orderData.id) {
             return orderData.id;
         }
@@ -101,6 +107,14 @@ document.getElementById('payBtn').addEventListener('click', () => {
     document.getElementById('cardExpiry').value = '';
     document.getElementById('cardCvv').value = '';
 
+    //hide form , labels, and button fields after submission
+    document.getElementById('cardName').style.display = 'none';
+    document.getElementById('cardNumber').style.display = 'none';
+    document.getElementById('cardExpiry').style.display = 'none';       
+    document.getElementById('cardCvv').style.display = 'none';
+    document.getElementById('payBtn').style.display = 'none';
+    document.querySelectorAll('label').forEach(label => label.style.display = 'none');
+
     //add message saying "transaction in process" or something similar
     resultMessage("Processing transaction...");
 });
@@ -111,3 +125,8 @@ function resultMessage(message) {
     container.innerHTML = "";
     container.innerHTML = message;
 }
+
+//add a buttont to reset page after transaction
+resetBtn.addEventListener('click', () => {
+    location.reload();
+});
