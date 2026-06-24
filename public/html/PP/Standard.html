@@ -46,31 +46,39 @@
             </div>
           </div>
           <h1>Card Payment</h1>
-           <div id="paypal-button-container" class="paypal-button-container"></div>
+ 
             <!-- Containers for Card Fields hosted by PayPal -->
             <div id="card-form" class="card_container">
                 <div id="card-name-field-container"></div>
                 <div id="card-number-field-container"></div>
                 <div id="card-expiry-field-container"></div>
                 <div id="card-cvv-field-container"></div>
-            </div>    
-           <button class="pay-button" id="card-field-submit-button" type="button">
-                Pay now with Card
-            </button>
-          <div id="paypal-button"></div>
-          <div
-              data-pp-message
-              data-pp-style-text-align="left"
-              data-pp-style-logo-position="left"
-              data-pp-style-ratio="20x1"
-              data-pp-style-layout="text"
-              data-pp-style-logo-type="primary"
-              data-pp-style-text-color="#333333"
-              data-pp-style-text-size="14"
-              data-pp-style-color="#333333"
-              >
-          </div>
+            </div> 
+            
+            <div class="payment-container">
+              <button class="pay-button" id="card-field-submit-button" type="button">
+                    Pay now with Card
+              </button>
+              <br>
+              <br>
+
+              <!-- PayPal Buttons & Messages -->
+              <div class="v6-paypal" id="paypal-button"></div>
+              <br>
+              <div
+                  data-pp-message
+                  data-pp-style-text-align="left"
+                  data-pp-style-logo-position="left"
+                  data-pp-style-ratio="20x1"
+                  data-pp-style-layout="text"
+                  data-pp-style-logo-type="primary"
+                  data-pp-style-text-color="#333333"
+                  data-pp-style-text-size="14"
+                  data-pp-style-color="#333333">
+              </div>
+            </div>
           <p id="result-message"></p>
+
         </div>
       </main>
     </div>

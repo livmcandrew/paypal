@@ -46,6 +46,13 @@ h3{
   top: 0;
 }
 
+.navbar-y {
+  background: #f4c542;
+  padding: 12px 18px;
+  position: sticky;
+  top: 0;
+}
+
 .legend {
   display: flex;
   gap: 20px;
@@ -605,8 +612,19 @@ fieldset {
     font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif
 }
 
+/* V6 SDK  */
+.payment-container{
+  width: 100%;
+  text-align: center;
+}
 
-//No SDK 
+.v6-paypal{
+  width:90%;
+  margin: 0 auto;
+  max-width: 650px;
+}
+
+/*No SDK */ 
 /* Card Preview */
 .card-preview {
   background: linear-gradient(135deg, #185FA5 0%, #0C447C 100%);

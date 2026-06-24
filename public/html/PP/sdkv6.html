@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
+  
     <link rel="stylesheet" href="/styles/styles.css">
     <title>Liv's Site</title>
   </head>
@@ -22,8 +22,9 @@
     </nav>
 
     <div class="box" id="demo-frame">
-      <h2>Standard Checkout</h2>
+      <h2>JS SDK v6 Checkout</h2>
       <main class="page">
+
         <div class="checkout-card" id="checkout-message"> 
           <div class="heading">CHECKOUT</div>
           
@@ -37,16 +38,32 @@
               <div class="item-price">£100</div>
             </div>
           </div>
+
           <h1>Card Payment</h1>
-          <paypal-button id="paypal-button" type="pay,pay"></paypal-button>  
-           
-          </button>
+          <div class="payment-container" >
+          <paypal-button class="v6-paypal" id="paypal-button" type="pay"></paypal-button> 
+          <br><br> 
+          <paypal-pay-later-button class="v6-paypal" id="paylater-button" type="pay"></paypal-pay-later-button>
+          <br>
+          <paypal-message
+              auto-bootstrap
+              class="v6-paypal"
+              amount="100.00"
+              currency-code="GBP"
+              logo-type="MONOGRAM"
+              text-color="MONOCHROME"
+          ></paypal-message>
           <p id="result-message"></p>
+          </div>
         </div>
+       
       </main>
     </div>
   </body>
   <!-- Load the PayPal JS SDK with your PayPal Client ID-->
-  <script src="https://www.sandbox.paypal.com/web-sdk/v6/core"></script>
-  <script src="/scripts/PP/sdk6Scripts.js"></script>
+    <script src="/scripts/PP/sdk6Scripts.js"></script>
+    <script 
+      src="https://www.sandbox.paypal.com/web-sdk/v6/core"
+      onload="onPayPalWebSdkLoaded()">
+    </script>
 </html>

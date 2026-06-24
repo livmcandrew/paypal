@@ -41,75 +41,75 @@ const ordersController = new OrdersController(client);
 const paymentsController = new PaymentsController(client);
 
 
-// /**
-//  * Create an order to start the transaction.
-//  */
-// const createOrder = async (cart) => {
-//    const collect = {
-//         body: {
-//             intent: "CAPTURE",
-//             purchaseUnits: [
-//                 {
-//                     amount: {
-//                         currencyCode: "GBP",
-//                         value: "100",
-//                         breakdown: {
-//                             itemTotal: {
-//                                 currencyCode: "GBP",
-//                                 value: "100",
-//                             },
-//                         },
-//                     },
-//                     // lookup item details in `cart` from database
-//                     items: [
-//                         {
-//                             name: "T-Shirt",
-//                             unitAmount: {
-//                                 currencyCode: "GBP",
-//                                 value: "100",
-//                             },
-//                             quantity: "1",
-//                             description: "Super Fresh Shirt",
-//                             sku: "sku01",
-//                         },
-//                     ],
-//                 },
-//             ],
-//         },
-//         prefer: "return=minimal",
-//     };
+/**
+ * Create an order to start the transaction.
+ */
+const createOrder = async (cart) => {
+   const collect = {
+        body: {
+            intent: "CAPTURE",
+            purchaseUnits: [
+                {
+                    amount: {
+                        currencyCode: "GBP",
+                        value: "100",
+                        breakdown: {
+                            itemTotal: {
+                                currencyCode: "GBP",
+                                value: "100",
+                            },
+                        },
+                    },
+                    // lookup item details in `cart` from database
+                    items: [
+                        {
+                            name: "T-Shirt",
+                            unitAmount: {
+                                currencyCode: "GBP",
+                                value: "100",
+                            },
+                            quantity: "1",
+                            description: "Super Fresh Shirt",
+                            sku: "sku01",
+                        },
+                    ],
+                },
+            ],
+        },
+        prefer: "return=minimal",
+    };
    
 
-//     try {
-//         const { body, ...httpResponse } = await ordersController.createOrder(
-//             collect
-//         );
-//         // Get more response info...
-//         // const { statusCode, headers } = httpResponse;
-//         return {
-//             jsonResponse: JSON.parse(body),
-//             httpStatusCode: httpResponse.statusCode,
-//         };
-//     } catch (error) {
-//         if (error instanceof ApiError) {
-//             // const { statusCode, headers } = error;
-//             throw new Error(error.message);
-//         }
-//     }
-// };
+    try {
+        const { body, ...httpResponse } = await ordersController.createOrder(
+            collect
+        );
+        // Get more response info...
+        // const { statusCode, headers } = httpResponse;
+        return {
+            jsonResponse: JSON.parse(body),
+            httpStatusCode: httpResponse.statusCode,
+        };
+    } catch (error) {
+        if (error instanceof ApiError) {
+            // const { statusCode, headers } = error;
+            throw new Error(error.message);
+        }
+    }
+};
 
-// // createOrder route
-// router.post("/api/orders", async (req, res) => {
-//     try {
-//         // use the cart information passed from the front-end to calculate the order amount detals
-//         const { cart } = req.body;
-//         const { jsonResponse, httpStatusCode } = await createOrder(cart);
-//         res.status(httpStatusCode).json(jsonResponse);
-//     } catch (error) {
-//         console.error("Failed to create order:", error);
-//         res.status(500).json({ error: "Failed to create order." });
-//     }
-// });
+// createOrder route
+router.post("/api/orders", async (req, res) => {
+    try {
+        // use the cart information passed from the front-end to calculate the order amount detals
+        const { cart } = req.body;
+        const { jsonResponse, httpStatusCode } = await createOrder(cart);
+        res.status(httpStatusCode).json(jsonResponse);
+    } catch (error) {
+        console.error("Failed to create order:", error);
+        res.status(500).json({ error: "Failed to create order." });
+    }
+});
 
 
 /**
@@ -153,7 +153,7 @@ router.post("/api/orders/:orderID/capture", async (req, res) => {
 
 
 /*Create an order for APP SWITCH to start the transaction.*/
-const createOrder = async (cart) => {
+const createOrderAPPS = async (cart) => {
    const collect = {
         body: {
             intent: "CAPTURE",
@@ -204,7 +204,7 @@ const createOrder = async (cart) => {
    
 
     try {
-        const { body, ...httpResponse } = await ordersController.createOrder(
+        const { body, ...httpResponse } = await ordersController.createOrderAPPS(
             collect
         );
         // Get more response info...
@@ -296,17 +296,64 @@ const createOrder3DSexternal = async (cart, card, authentication_results) => {
     return { jsonResponse, httpStatusCode: orderAPI.status };
 };
 
-
 //createOrder api route for NO SDK flow
 router.post("/api/orders/nosdk", async (req, res) => {
     try {
         const { cart, card, authentication_results } = req.body;
-        //console.log("req.body:", JSON.stringify(req.body, null, 2)); // ✅ see what's arriving
+        //console.log("req.body:", JSON.stringify(req.body, null, 2)); 
         const { jsonResponse, httpStatusCode } = await createOrder3DSexternal(cart, card, authentication_results);
         res.status(httpStatusCode).json(jsonResponse);
-        console.log("Order created successfully:", httpStatusCode); // ✅ log the successful response
+        console.log("Order created successfully:", httpStatusCode);
     } catch (error) {
-        console.error("Failed to create order:", error.message); // ✅ log the actual error
+        console.error("Failed to create order:", error.message); 
+        res.status(500).json({ error: "Failed to create order." });
+    }
+});
+
+//v6 create an order api 
+const v6CreateOrder = async (cart) =>{
+    const {amount, invoice_id, description, quantity, sku, currencyCode, name} = cart[0]
+
+    const payload = {
+        body: {
+            intent: "CAPTURE",
+            purchaseUnits: [
+                {
+                    invoice_id:  invoice_id,
+                    description: description,
+                    amount: {
+                        currencyCode: currencyCode,
+                        value:         amount
+                    },
+                },
+            ],
+        },
+        prefer: "return=minimal",
+    };
+   
+
+    try {
+        const { body, ...httpResponse } = await ordersController.createOrder(payload);
+        return {
+            jsonResponse: JSON.parse(body),
+            httpStatusCode: httpResponse.statusCode,
+        };
+    } catch (error) {
+        console.error("v6CreateOrder error:", error); // ← add this to see the real error
+        throw new Error(error.message); // ← always throw regardless of error type
+    }
+
+};
+
+//createOrder api route for JS SDK v6
+router.post("/api/orders/v6", async (req, res) => {
+    try{
+        const {cart} = req.body;
+        const {jsonResponse, httpStatusCode} = await v6CreateOrder(cart);
+        res.status(httpStatusCode).json(jsonResponse);
+        console.log("Order created successfully:", httpStatusCode);
+    } catch (error){
+        console.error("Failed to create order:", error.message); 
         res.status(500).json({ error: "Failed to create order." });
     }
 });

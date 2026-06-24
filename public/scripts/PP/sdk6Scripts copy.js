@@ -1,35 +1,19 @@
-const amount   = document.querySelector(".item-price").textContent.trim().replace("£", "");
-const invoiceId = `INV-${Math.random().toString(36).substring(2, 15)}`;
-
-//display message to User 
-function resultMessage(message) {
-    const container = document.querySelector("#result-message");
-    container.innerHTML = message;
-}
-
-//Main Function!!!!
 async function onPayPalWebSdkLoaded() {
   console.log("PayPal Web SDK loaded successfully.");
   try {
     // Create PayPal SDK instance
     const sdkInstance = await window.paypal.createInstance({
-      clientId: "AVGqIc8hFJ_fclr98apdzfSRMvn-G3RRRAqeSMbFP1lnDG-SghtB2sXeMEmDB4lKtsuF1Onn-CquEc_5",
+      clientToken: "AbKUZXGwebHJfzaEHRSw9VKb1P0qT3tJynDl-OtctHcwM2Yj0g0wyA0DP7QU9OTMXV02flO8tMsGNTTl",
       components: ["paypal-payments", "paypal-messages"],
       pageType: "checkout",
       buyerCountry: "GB",
       locale: "en-GB",
-      testBuyerCountry: "GB", // Used for testing eligibility in sandbox
     });
 
     // Check eligibility for all payment methods
     const paymentMethods = await sdkInstance.findEligibleMethods({
       currencyCode: "GBP",
-      amount: amount,  
-    });
-
-    //Paypal Messages 
-    const messagesInstance = sdkInstance.createPayPalMessages({
-      currencyCode: "GBP", // Applied to all messages on the page
+      amount: "10.00",  
     });
 
     // Set up PayPal button if eligible
@@ -52,35 +36,30 @@ async function onPayPalWebSdkLoaded() {
   }
 }
 
-// Called when user approves a payment 
-async function onApproveCallback(data) {
-  console.log("Payment approved:", data);
-  try {
-    const orderData = await  fetch(`/ppcheckout/api/orders/${data.orderId}/capture`,
-          {
-              method: "POST",
-              headers: {
-                  "Content-Type": "application/json",
-              },
-          }
-      );
-    const message = `Payment captured successfully:", {orderData}`;
-    console.log("Payment captured successfully:", orderData);
-    resultMessage()
-  } catch (error) {
-    console.error("Payment capture failed:", error);
-  }
-};
-
-//On Cancel function
-async function onCancelCallback(data) {
-    console.log('PayPal payment cancelled', JSON.stringify(data, 0, 2));
-}
-
-// Shared payment session options for all payment methods, after payment approval, cancellation, or error
+// Shared payment session options for all payment methods
 const paymentSessionOptions = {
-  onApprove: onApproveCallback,
-  onCancel: onCancelCallback,
+  // Called when user approves a payment 
+  async onApprove(data) {
+    console.log("Payment approved:", data);
+    try {
+      const orderData = await captureOrder({
+        orderId: data.orderId,
+      });
+      console.log("Payment captured successfully:", orderData);
+    } catch (error) {
+      console.error("Payment capture failed:", error);
+    }
+  },
+  
+  // Called when user cancels a payment
+  onCancel(data) {
+    console.log("Payment cancelled:", data);
+  },
+  
+  // Called when an error occurs during payment
+  onError(error) {
+    console.error("Payment error:", error);
+  },
 };
 
 // Set up standard PayPal button
@@ -90,6 +69,8 @@ async function configurePayPalButton(sdkInstance) {
   );
 
   const paypalButton = document.querySelector("paypal-button");
+  paypalButton.removeAttribute("hidden");
+
   paypalButton.addEventListener("click", async () => {
     try {
       await paypalPaymentSession.start(
@@ -114,6 +95,7 @@ async function setupPayLaterButton(sdkInstance, payLaterPaymentMethodDetails) {
   // Configure button with Pay Later specific details
   payLaterButton.productCode = productCode;
   payLaterButton.countryCode = countryCode;
+  payLaterButton.removeAttribute("hidden");
 
   payLaterButton.addEventListener("click", async () => {
     try {
@@ -125,29 +107,4 @@ async function setupPayLaterButton(sdkInstance, payLaterPaymentMethodDetails) {
       console.error("Pay Later payment start error:", error);
     }
   });
-}
-
-// Create order function to be passed to payment sessions
-async function createOrder() {
-  const response = await fetch("/ppcheckout/api/orders/v6", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      cart: [
-          {
-              invoice_id: invoiceId,
-              amount: amount,
-              name: "Cashmere Knitted Jumper",
-              quantity: "1",
-              sku: "sku01",
-              currencyCode: "GBP",
-              description: "Black Cashmere Knitted Jumper",
-          },
-      ]
-    }),
-  });
-  const data = await response.json();
-  return { orderId: data.id }; // ← v6 requires this exact shape
 }
