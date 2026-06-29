@@ -36,16 +36,89 @@ const threeDSResult = {
   prior_authentication_timestamp: "2026-03-01T12:00:00Z"
 };
 
+//clear fields
+async function clearFields() {
+    //clear form after submission
+    document.getElementById('cardName').value = '';
+    document.getElementById('cardNumber').value = '';
+    document.getElementById('cardExpiry').value = '';
+    document.getElementById('cardCvv').value = '';
+
+    //hide form , labels, and button fields after submission
+    document.getElementById('cardName').style.display = 'none';
+    document.getElementById('cardNumber').style.display = 'none';
+    document.getElementById('cardExpiry').style.display = 'none';       
+    document.getElementById('cardCvv').style.display = 'none';
+    document.getElementById('payBtn').style.display = 'none';
+    document.querySelectorAll('label').forEach(label => label.style.display = 'none');
+};
+
 //random invoice id 
 const invoiceId = `INV-${Math.random().toString(36).substring(2, 15)}`;
 
 //get reset button 
 const resetBtn = document.getElementById('resetBtn');
 
-//then call the order api with threeDSResult and getCardData. 
+//then call the order api with external threeDSResult and getCardData. 
+// async function createOrderCallback3DSPass() {
+//     try {
+//         const cardData = getCardData(); //call card details
+//         const response = await fetch("/ppcheckout/api/orders/nosdk", {
+//             method: "POST",
+//             headers: {
+//                 "Content-Type": "application/json",
+//             },
+//             // use the "body" param to optionally pass additional order information like product ids and quantities
+//             body: JSON.stringify({
+//                 cart: [
+//                     {
+//                         invoice_id: invoiceId,
+//                         name: "Cashmere Knitted Jumper",
+//                         quantity: "1",
+//                         value: "100",
+//                         sku: "sku01",
+//                         currencyCode: "GBP",
+//                         description: "Cashmere Knitted Jumper",
+//                     },
+//                 ],
+//                 card: {
+//                     name: cardData.name,
+//                     number: cardData.number,
+//                     expiry: `${cardData.expiry_year}-${cardData.expiry_month.padStart(2, '0')}`,
+//                     security_code: cardData.security_code,
+//                 }, 
+//                 authentication_results: [threeDSResult]  //only need for 3DS External pass through, if needed turn on option 1 api
+//             }),
+//         });
+
+//         const orderData = await response.json();
+//         console.log("Order created successfully:", orderData);
+//         resultMessage(`Order created successfully! Order ID: ${orderData.id}`);
+
+//         //un hide reset button after successful transaction
+//         resetBtn.hidden = false;
+//         if (orderData.id) {
+//             return orderData.id;
+//         }
+//         const errorDetail = orderData?.details?.[0];
+//         const errorMessage = errorDetail
+//             ? `${errorDetail.issue} ${errorDetail.description} (${orderData.debug_id})`
+//             : JSON.stringify(orderData);
+
+//         throw new Error(errorMessage);
+
+//     } catch (error) {
+//         console.error(error);
+//         // resultMessage(`Could not initiate PayPal Checkout...<br><br>${error}`);
+//     }
+// }
+
+//Option 2 - no SDK with PP 3DS
+//then call the order api with getCardData. 
 async function createOrderCallback() {
     try {
         const cardData = getCardData(); //call card details
+        console.log("cardData:", cardData);
         const response = await fetch("/ppcheckout/api/orders/nosdk", {
             method: "POST",
             headers: {
@@ -69,8 +142,7 @@ async function createOrderCallback() {
                     number: cardData.number,
                     expiry: `${cardData.expiry_year}-${cardData.expiry_month.padStart(2, '0')}`,
                     security_code: cardData.security_code,
-                }, 
-                authentication_results: [threeDSResult]
+                },
             }),
         });
 
@@ -78,7 +150,19 @@ async function createOrderCallback() {
         console.log("Order created successfully:", orderData);
         resultMessage(`Order created successfully! Order ID: ${orderData.id}`);
 
-        //un hide reset button after successful transaction
+        // Handle 3DS challenge
+        if (orderData.status === "PAYER_ACTION_REQUIRED") {
+            const actionLink = orderData.links.find(link => link.rel === "payer-action");
+            if (actionLink) {
+                console.log("3DS required, redirecting to:", actionLink.href);
+                sessionStorage.setItem("pendingOrderId", orderData.id); // 👈 save order ID
+                window.location.href = actionLink.href;
+                return;
+            }
+        }
+
+
+        //unhide reset button after successful transaction
         resetBtn.hidden = false;
         if (orderData.id) {
             return orderData.id;
@@ -96,24 +180,63 @@ async function createOrderCallback() {
     }
 }
 
+// Capture order after 3DS completes
+async function captureOrder(orderId) {
+    try {
+        const response = await fetch(`/ppcheckout/nosdk/api/orders/${orderId}/capture`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            }
+        });
 
-// Example: hook it into your submit button
-document.getElementById('payBtn').addEventListener('click', () => {
-    createOrderCallback();
+        const captureData = await response.json();
+        console.log("Capture response:", captureData);
 
-    //clear form after submission
-    document.getElementById('cardName').value = '';
-    document.getElementById('cardNumber').value = '';
-    document.getElementById('cardExpiry').value = '';
-    document.getElementById('cardCvv').value = '';
+        if (captureData.status === "COMPLETED") {
+            resultMessage(`Order completed successfully! Order ID: ${captureData.id}`);
+            resetBtn.hidden = false;
+        } else {
+            const errorDetail = captureData?.details?.[0];
+            const errorMessage = errorDetail
+                ? `${errorDetail.issue} ${errorDetail.description} (${captureData.debug_id})`
+                : JSON.stringify(captureData);
+            throw new Error(errorMessage);
+        }
 
-    //hide form , labels, and button fields after submission
-    document.getElementById('cardName').style.display = 'none';
-    document.getElementById('cardNumber').style.display = 'none';
-    document.getElementById('cardExpiry').style.display = 'none';       
-    document.getElementById('cardCvv').style.display = 'none';
-    document.getElementById('payBtn').style.display = 'none';
-    document.querySelectorAll('label').forEach(label => label.style.display = 'none');
+    } catch (error) {
+        console.error(error);
+        resultMessage(`Capture failed...<br><br>${error}`);
+    }
+}
+
+// Call this on page load if returning from 3DS challenge
+async function handleReturnFrom3DS() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const liabilityShift = urlParams.get("liability_shift");
+    const orderId = sessionStorage.getItem("pendingOrderId"); // 👈 retrieve it
+
+    //console.log("handleReturnFrom3DS fired, orderId:", orderId, "liability_shift:", liabilityShift);
+
+    if (orderId && liabilityShift) {
+        sessionStorage.removeItem("pendingOrderId"); // clean up
+        resultMessage("3DS verified, completing order...");
+        await captureOrder(orderId);
+    }
+}
+
+// Hide fields if returning from 3DS
+if (sessionStorage.getItem("pendingOrderId")) {
+    clearFields();
+}
+
+handleReturnFrom3DS();
+
+// payment when submitted
+document.getElementById('payBtn').addEventListener('click', async () => {
+    await createOrderCallback();
+
+    clearFields();
 
     //add message saying "transaction in process" or something similar
     resultMessage("Processing transaction...");
