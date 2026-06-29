@@ -43,6 +43,24 @@
           <div class="card-form-wrap">
               <h1>Card Payment</h1>
 
+              <!-- 3DS Pass-through Toggle -->
+              <div class="tds-toggle-row">
+                <div class="tds-toggle-labels">
+                  <span class="tds-toggle-title">
+                    3DS External Pass-Through
+                    <span class="tds-badge tds-badge--off" id="tdsBadge">OFF</span>
+                  </span>
+                  <span class="tds-toggle-desc">Force 3D Secure authentication on this transaction through PayPal 3DS</span>
+                </div>
+                <label class="tds-switch" aria-label="Toggle 3DS pass-through">
+                  <input type="checkbox" id="tdsToggle" />
+                  <span class="tds-track"></span>
+                </label>
+              </div>
+              <div class="tds-info-box" id="tdsInfo">
+                3DS External Pass-Through <strong>ON</strong> — 3DS will take place by External Party (static values passed).
+              </div>
+
               <!-- Form Fields -->
               <div class="form-group" id="nameGroup">
                 <label for="cardName">Cardholder name</label>

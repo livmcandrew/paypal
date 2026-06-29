@@ -765,3 +765,126 @@ fieldset {
   margin-top: 0.5rem;
   transition: background 0.15s;
 }
+
+
+/* ─── 3DS Pass-through Toggle ─────────────────────────────────────────────── */
+
+.tds-toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 14px;
+  margin-bottom: 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background: #f8f9fa;
+}
+
+.tds-toggle-labels {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.tds-toggle-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.tds-toggle-desc {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+/* Badge */
+.tds-badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 20px;
+  letter-spacing: 0.04em;
+}
+
+.tds-badge--off {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.tds-badge--on {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+/* Toggle switch */
+.tds-switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.tds-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.tds-track {
+  position: absolute;
+  inset: 0;
+  border-radius: 24px;
+  background: #d1d5db;
+  transition: background 0.2s ease;
+}
+
+.tds-track::after {
+  content: '';
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #ffffff;
+  top: 3px;
+  left: 3px;
+  transition: transform 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.tds-switch input:checked + .tds-track {
+  background: #3b6aa0; /* matches your existing navbar/button blue */
+}
+
+.tds-switch input:checked + .tds-track::after {
+  transform: translateX(20px);
+}
+
+.tds-switch input:focus-visible + .tds-track {
+  outline: 2px solid #3b6aa0;
+  outline-offset: 2px;
+}
+
+/* Info box (shown when toggle is ON) */
+.tds-info-box {
+  display: none;
+  margin-top: -4px;
+  margin-bottom: 14px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid #bfdbfe;
+  background: #eff6ff;
+  color: #1e40af;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.tds-info-box--visible {
+  display: block;
+}

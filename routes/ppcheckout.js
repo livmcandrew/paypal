@@ -242,80 +242,80 @@ router.post("/api/orders", async (req, res) => {
 
 //NO SDK APIS --------------------------------------------------
 // Option 1 : no SDK and 3DS External Passthrough flow (requires authentication)
-// const createOrder3DSexternal = async (cart, card, authentication_results) => {
-//     const { invoice_id, name, value, currencyCode, description, sku, quantity } = cart[0];
-//     const credentials = Buffer.from(`${PAYPAL_CLIENT_ID}:${PAYPAL_CLIENT_SECRET}`).toString("base64");
+const createOrder3DSexternal = async (cart, card, authentication_results) => {
+    const { invoice_id, name, value, currencyCode, description, sku, quantity } = cart[0];
+    const credentials = Buffer.from(`${PAYPAL_CLIENT_ID}:${PAYPAL_CLIENT_SECRET}`).toString("base64");
 
-//     //get client access token
-//     const tokenResponse = await fetch("https://api-m.sandbox.paypal.com/v1/oauth2/token", {
-//         method: "POST",
-//         headers: {
-//             "Authorization": `Basic ${credentials}`,
-//             "Content-Type": "application/x-www-form-urlencoded"
-//         },
-//         body: "grant_type=client_credentials"
-//     });
-//     const { access_token } = await tokenResponse.json();
+    //get client access token
+    const tokenResponse = await fetch("https://api-m.sandbox.paypal.com/v1/oauth2/token", {
+        method: "POST",
+        headers: {
+            "Authorization": `Basic ${credentials}`,
+            "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: "grant_type=client_credentials"
+    });
+    const { access_token } = await tokenResponse.json();
 
-//     // build Order API payload 
-//     const payload = {
-//         intent: "CAPTURE",
-//         payment_source: {
-//             card: {
-//                 name:          card.name,
-//                 number:        card.number,
-//                 expiry:        card.expiry,
-//                 security_code: card.security_code,
-//             },
-//             authentication_results: authentication_results  // ✅ sibling of card
-//         },
-//         application_context: {
-//             payment_method: {
-//                 payee_preferred: "IMMEDIATE_PAYMENT_REQUIRED",
-//                 standard_entry_class_code: "WEB"
-//             },
-//             vault: false
-//         },
-//         purchase_units: [
-//             {
-//                 invoice_id:  invoice_id,
-//                 description: description,
-//                 amount: {
-//                     currency_code: currencyCode,
-//                     value:         value
-//                 }
-//             }
-//         ]
-//     };
+    // build Order API payload 
+    const payload = {
+        intent: "CAPTURE",
+        payment_source: {
+            card: {
+                name:          card.name,
+                number:        card.number,
+                expiry:        card.expiry,
+                security_code: card.security_code,
+            },
+            authentication_results: authentication_results  // ✅ sibling of card
+        },
+        application_context: {
+            payment_method: {
+                payee_preferred: "IMMEDIATE_PAYMENT_REQUIRED",
+                standard_entry_class_code: "WEB"
+            },
+            vault: false
+        },
+        purchase_units: [
+            {
+                invoice_id:  invoice_id,
+                description: description,
+                amount: {
+                    currency_code: currencyCode,
+                    value:         value
+                }
+            }
+        ]
+    };
 
-//     // call the PayPal Orders API directly with the access token and payload!
-//     const orderAPI = await fetch("https://api-m.sandbox.paypal.com/v2/checkout/orders", {
-//         method: "POST",
-//         headers: {
-//             "Content-Type": "application/json",
-//             "PayPal-Request-Id": `request-${Math.random().toString(36).substring(2, 15)}`,
-//             "Authorization": `Bearer ${access_token}`
-//         },
-//         body: JSON.stringify(payload)
-//     });
+    // call the PayPal Orders API directly with the access token and payload!
+    const orderAPI = await fetch("https://api-m.sandbox.paypal.com/v2/checkout/orders", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "PayPal-Request-Id": `request-${Math.random().toString(36).substring(2, 15)}`,
+            "Authorization": `Bearer ${access_token}`
+        },
+        body: JSON.stringify(payload)
+    });
 
-//     const jsonResponse = await orderAPI.json();
-//     return { jsonResponse, httpStatusCode: orderAPI.status };
-// };
+    const jsonResponse = await orderAPI.json();
+    return { jsonResponse, httpStatusCode: orderAPI.status };
+};
 
-// //createOrder api route for NO SDK flow
-// router.post("/api/orders/nosdk", async (req, res) => {
-//     try {
-//         const { cart, card, authentication_results } = req.body;
-//         //console.log("req.body:", JSON.stringify(req.body, null, 2)); 
-//         const { jsonResponse, httpStatusCode } = await createOrder3DSexternal(cart, card, authentication_results);
-//         res.status(httpStatusCode).json(jsonResponse);
-//         console.log("Order created successfully:", httpStatusCode);
-//     } catch (error) {
-//         console.error("Failed to create order:", error.message); 
-//         res.status(500).json({ error: "Failed to create order." });
-//     }
-// });
+//createOrder api route for NO SDK flow
+router.post("/api/orders/nosdk/ex3DS", async (req, res) => {
+    try {
+        const { cart, card, authentication_results } = req.body;
+        //console.log("req.body:", JSON.stringify(req.body, null, 2)); 
+        const { jsonResponse, httpStatusCode } = await createOrder3DSexternal(cart, card, authentication_results);
+        res.status(httpStatusCode).json(jsonResponse);
+        console.log("Order created successfully:", httpStatusCode);
+    } catch (error) {
+        console.error("Failed to create order:", error.message); 
+        res.status(500).json({ error: "Failed to create order." });
+    }
+});
 
 //Options 2 : no SDK (requires authentication, uses PP 3DS)
 // Step 1 - Get Auth & Create Order
@@ -351,6 +351,8 @@ const createOrder3DSPP = async (cart, card) => {
             }
         },
         application_context: {
+            //return_url: "http://localhost:3000/html/PP/nosdk.html?",
+            //cancel_url: "http://localhost:3000/html/PP/nosdk.html?cancel",
             return_url: "https://paypal-ppcp.onrender.com/html/PP/nosdk.html?",
             cancel_url: "https://paypal-ppcp.onrender.com/html/PP/nosdk.html?cancel",
             payment_method: {
@@ -389,8 +391,8 @@ const createOrder3DSPP = async (cart, card) => {
 
 // Step 2 — Capture Order (called after 3DS challenge completes)
 const captureOrderNoSDK = async (orderId) => {
-    const credentials = Buffer.from(`${PAYPAL_CLIENT_ID}:${PAYPAL_CLIENT_SECRET}`).toString("base64");
     //get client access token
+    const credentials = Buffer.from(`${PAYPAL_CLIENT_ID}:${PAYPAL_CLIENT_SECRET}`).toString("base64");
     const tokenResponse = await fetch("https://api-m.sandbox.paypal.com/v1/oauth2/token", {
         method: "POST",
         headers: {
@@ -414,7 +416,7 @@ const captureOrderNoSDK = async (orderId) => {
 };
 
 //createOrder api route for NO SDK flow
-router.post("/api/orders/nosdk", async (req, res) => {
+router.post("/api/orders/nosdk/pp3DS", async (req, res) => {
     try {
         const { cart, card } = req.body;
         
