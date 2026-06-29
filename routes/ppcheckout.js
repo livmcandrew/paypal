@@ -351,8 +351,8 @@ const createOrder3DSPP = async (cart, card) => {
             }
         },
         application_context: {
-            return_url: "https://paypal-ppcp.onrender.com",
-            cancel_url: "https://paypal-ppcp.onrender.com/cancel",
+            return_url: "https://paypal-ppcp.onrender.com/html/PP/nosdk.html?",
+            cancel_url: "https://paypal-ppcp.onrender.com/html/PP/nosdk.html?cancel",
             payment_method: {
                 payee_preferred: "IMMEDIATE_PAYMENT_REQUIRED",
                 standard_entry_class_code: "WEB"

@@ -225,9 +225,11 @@ async function handleReturnFrom3DS() {
     }
 }
 
-// Hide fields if returning from 3DS
-if (sessionStorage.getItem("pendingOrderId")) {
+// Hide fields if returning from 3DS, otherwise clear any stale sessionStorage
+if (sessionStorage.getItem("pendingOrderId") && new URLSearchParams(window.location.search).get("liability_shift")) {
     clearFields();
+} else {
+    sessionStorage.removeItem("pendingOrderId"); // clear stale value on fresh page load
 }
 
 handleReturnFrom3DS();
