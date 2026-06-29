@@ -1,5 +1,5 @@
 //script for toggle 
-let DSStatus = ""; 
+let DSStatus = "paypal"; 
 document.addEventListener('DOMContentLoaded', function () {
     const tdsToggle = document.getElementById('tdsToggle');
     const tdsBadge  = document.getElementById('tdsBadge');
@@ -12,14 +12,14 @@ document.addEventListener('DOMContentLoaded', function () {
         tdsBadge.classList.add('tds-badge--on');
         tdsInfo.classList.add('tds-info-box--visible');
         DSStatus = "external";
-        console.log('3DS:', DSStatus);
+        console.log('3DS Set to:', DSStatus);
       } else {
         tdsBadge.textContent = 'OFF';
         tdsBadge.classList.remove('tds-badge--on');
         tdsBadge.classList.add('tds-badge--off');
         tdsInfo.classList.remove('tds-info-box--visible');
         DSStatus = "paypal";
-        console.log('3DS:', DSStatus);
+        console.log('3DS Set to:', DSStatus);
       }
     });
 });
