@@ -1,3 +1,4 @@
+let amount = "100";
 //script for toggle 
 let DSStatus = "paypal"; 
 document.addEventListener('DOMContentLoaded', function () {
@@ -153,7 +154,7 @@ async function createOrderCallback(cardData) {
                         invoice_id: invoiceId,
                         name: "Cashmere Knitted Jumper",
                         quantity: "1",
-                        value: "100",
+                        value: amount,
                         sku: "sku01",
                         currencyCode: "GBP",
                         description: "Cashmere Knitted Jumper",
@@ -188,6 +189,7 @@ async function createOrderCallback(cardData) {
         if (orderData.id) {
             return orderData.id;
         }
+
         const errorDetail = orderData?.details?.[0];
         const errorMessage = errorDetail
             ? `${errorDetail.issue} ${errorDetail.description} (${orderData.debug_id})`
@@ -234,12 +236,12 @@ async function captureOrder(orderId) {
 async function handleReturnFrom3DS() {
     const urlParams = new URLSearchParams(window.location.search);
     const liabilityShift = urlParams.get("liability_shift");
-    const orderId = sessionStorage.getItem("pendingOrderId"); // 👈 retrieve it
+    const orderId = sessionStorage.getItem("pendingOrderId"); //retrieve order Id
 
     //console.log("handleReturnFrom3DS fired, orderId:", orderId, "liability_shift:", liabilityShift);
 
     if (orderId && liabilityShift) {
-        sessionStorage.removeItem("pendingOrderId"); // clean up
+        sessionStorage.removeItem("pendingOrderId"); //clean up
         resultMessage("3DS verified, completing order...");
         await captureOrder(orderId);
     }

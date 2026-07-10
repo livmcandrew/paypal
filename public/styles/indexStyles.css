@@ -1,0 +1,95 @@
+/* index.css — styles for Liv's Test Shop landing page only */
+
+:root {
+  --bg: #f5f6f8;
+  --text: #111827;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  color: var(--text);
+  background: linear-gradient(180deg, #f7f7f7 0%, var(--bg) 60%);
+}
+
+h2 {
+  text-align: center;
+  font-size: 28px;
+  margin: 8px 0 22px;
+  font-weight: 800;
+}
+
+/* Toggle legend/filter bar */
+.legend {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.toggle-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid #ccc;
+  background: #fff;
+  border-radius: 20px;
+  padding: 6px 14px;
+  cursor: pointer;
+  opacity: 0.4;
+  transition: opacity 0.15s ease, box-shadow 0.15s ease;
+  font-size: 14px;
+}
+
+.toggle-btn.active {
+  opacity: 1;
+  background-color: #0070ba;
+  color: white;
+  box-shadow: 0 0 0 2px rgba(0, 112, 186, 0.3);
+}
+
+.legend-color {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+}
+
+.blue {
+  background-color: #4da3ff;
+}
+
+.yellow {
+  background-color: #f4c542;
+}
+
+/* Feature item grid */
+.item {
+  width: 32%;
+  min-width: 450px;
+  height: 300px;
+  float: left;
+  margin: 5px;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+}
+
+.feature-button {
+  height: 100px;
+  margin: 20px;
+  width: 400px;
+  background-color: #ffd140;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+}
+
+.pfeature-button {
+  height: 100px;
+  margin: 20px;
+  width: 400px;
+  background-color: #0079c1;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+}

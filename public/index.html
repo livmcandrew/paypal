@@ -4,107 +4,107 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="/styles/styles.css">
-    
+    <link rel="stylesheet" href="/styles/indexStyles.css">
     <title>Liv's Test Shop</title>
   </head>
   <body>
     <h2>Liv's Test Shop</h2>
 
     <div class="legend">
-      <div class="legend-item">
+      <button class="toggle-btn" data-filter="ppcp" type="button">
         <span class="legend-color blue"></span>
         PPCP Apps
-      </div>
-      <div class="legend-item">
+      </button>
+      <button class="toggle-btn" data-filter="braintree" type="button">
         <span class="legend-color yellow"></span>
         Braintree Apps
-      </div>
-    </div>
-    
-    <div class="item">
-        <form  action="html/BT/dropInUI.html" method="GET">
-        <button class="feature-button" type="submit">Drop-In UI</button>
-        </form>
-    </div>
-  
-     <div class="item">
-        <form action="html/BT/hostedFields.html" method="GET">
-        <button class="feature-button" type="submit">Hosted Fields</button>
-        </form>
+      </button>
     </div>
 
-    <div class="item">
-      <form action="html/BT/VaultingNewCust.html" method="GET">
+    <div class="item" data-ppcp="html/noContent.html" data-braintree="html/BT/dropInUI.html">
+      <form method="GET">
+        <input type="hidden" name="int" class="int-input" value="">
+        <button class="feature-button" type="submit">Drop-In UI</button>
+      </form>
+    </div>
+
+    <div class="item" data-ppcp="html/PP/hostedFields.html" data-braintree="html/BT/hostedFields.html">
+      <form method="GET">
+        <input type="hidden" name="int" class="int-input" value="">
+        <button class="feature-button" type="submit">Hosted Fields</button>
+      </form>
+    </div>
+
+    <div class="item" data-ppcp="html/noContent.html" data-braintree="html/BT/VaultingNewCust.html">
+      <form method="GET">
+        <input type="hidden" name="int" class="int-input" value="">
         <button class="feature-button" type="submit">Vaulting</button>
       </form>
     </div>
 
-    <div class="item">
-      <form action="html/BT/Standard.html" method="GET">
+    <div class="item" data-ppcp="html/PP/Standard.html" data-braintree="html/BT/Standard.html">
+      <form method="GET">
+        <input type="hidden" name="int" class="int-input" value="">
         <button class="feature-button" type="submit">Standard Checkout</button>
       </form>
     </div>
 
-    <div class="item">
-      <form action="html/BT/Adavnced.html" method="GET">
+    <div class="item" data-ppcp="html/PP/Advanced.html" data-braintree="html/BT/Adavnced.html">
+      <form method="GET">
+        <input type="hidden" name="int" class="int-input" value="">
         <button class="feature-button" type="submit">Advanced Checkout</button>
       </form>
     </div>
 
-    <div class="item">
-      <form action="html/PP/Standard.html" method="GET">
-        <button class="pfeature-button" type="submit">Standard Checkout</button>
+    <div class="item" data-ppcp="html/PP/Partner.html" data-braintree="html/noContent.html">
+      <form method="GET">
+        <input type="hidden" name="int" class="int-input" value="">
+        <button class="feature-button" type="submit">Partner Checkout</button>
       </form>
     </div>
 
-    <div class="item">
-      <form action="html/PP/Partner.html" method="GET">
-        <button class="pfeature-button" type="submit">Partner Checkout</button>
-      </form>
-    </div>
-
-    <div class="item">
-      <form action="html/PP/Advanced.html" method="GET">
-        <button class="pfeature-button" type="submit">Advanced Checkout</button>
-      </form>
-    </div>
-
-    <div class="item">
-      <form action="html/BT/authorisePayment.html" method="GET">
+    <div class="item" data-ppcp="html/noContent.html" data-braintree="html/BT/authorisePayment.html">
+      <form method="GET">
+        <input type="hidden" name="int" class="int-input" value="">
         <button class="feature-button" type="submit">Authorise Payment</button>
       </form>
     </div>
 
-    <div class="item">
-      <form action="html/BT/AFT.html" method="GET">
+    <div class="item" data-ppcp="html/noContent.html" data-braintree="html/BT/AFT.html">
+      <form method="GET">
+        <input type="hidden" name="int" class="int-input" value="">
         <button class="feature-button" type="submit">AFT</button>
       </form>
     </div>
 
-     <div class="item">
-      <form action="html/PP/appSwitch.html" method="GET">
-        <button class="pfeature-button" type="submit">App Switch</button>
+    <div class="item" data-ppcp="html/PP/appSwitch.html" data-braintree="html/noContent.html">
+      <form method="GET">
+        <input type="hidden" name="int" class="int-input" value="">
+        <button class="feature-button" type="submit">App Switch</button>
       </form>
     </div>
 
-    <div class="item">
-      <form action="html/BT/fastlane.html" method="GET">
+    <div class="item" data-ppcp="html/noContent.html" data-braintree="html/BT/fastlane.html">
+      <form method="GET">
+        <input type="hidden" name="int" class="int-input" value="">
         <button class="feature-button" type="submit">Fast Lane</button>
       </form>
     </div>
 
-    <div class="item">
-      <form action="html/PP/sdkv6.html" method="GET">
-        <button class="pfeature-button" type="submit">JS SDK v6</button>
+    <div class="item" data-ppcp="html/PP/sdkv6.html" data-braintree="html/noContent.html">
+      <form method="GET">
+        <input type="hidden" name="int" class="int-input" value="">
+        <button class="feature-button" type="submit">JS SDK v6</button>
       </form>
     </div>
 
-    <div class="item">
-      <form action="html/PP/nosdk.html" method="GET">
-        <button class="pfeature-button" type="submit">no JS SDK</button>
+    <div class="item" data-ppcp="html/PP/nosdk.html" data-braintree="html/noContent.html">
+      <form method="GET">
+        <input type="hidden" name="int" class="int-input" value="">
+        <button class="feature-button" type="submit">no JS SDK</button>
       </form>
     </div>
 
+    <script src="/scripts/indexScript.js"></script>
   </body>
 </html>

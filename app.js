@@ -30,16 +30,18 @@ app.use("/api", adyenRoutes);
 const requestOptions = { idempotencyKey: "YOUR_IDEMPOTENCY_KEY" };
 
 // changes the to correct checkout page depending on integration requested
-if (integration === "pp") {
-  app.use("/ppcheckout", ppcheckout);
-  console.log("PayPal checkout enabled");
-} else if (integration === "bt") {
-  app.use("/btcheckout", btcheckout);
-  console.log("Braintree checkout enabled");
-} else {
-  console.error("No valid integration specified. Use int=pp or int=bt");
-  process.exit(1);
-}
+// if (integration === "pp") {
+//   app.use("/ppcheckout", ppcheckout);
+//   console.log("PayPal checkout enabled");
+// } else if (integration === "bt") {
+//   app.use("/btcheckout", btcheckout);
+//   console.log("Braintree checkout enabled");
+// } else {
+//   console.error("No valid integration specified. Use int=pp or int=bt");
+//   process.exit(1);
+// }
+app.use("/ppcheckout", ppcheckout);
+app.use("/btcheckout", btcheckout);
 
 // run server 
 app.get("/", (req, res) => {
