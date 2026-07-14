@@ -1,6 +1,8 @@
 const submitButton = document.getElementById("submit-button");
 var paypalButton = document.getElementById("paypal-button");
 const setAmount = "120.00";
+const params = new URLSearchParams(window.location.search);
+const int = params.get('int');
 
 // Get the status if the payment has already been vaulted 
 function getVaultStatus() {
@@ -33,7 +35,7 @@ function clearVault() {
     "paypalBillingToken",
     "paypalCustomerId",
     ].forEach(k => localStorage.removeItem(k));
-    console.log("Vault cleared");
+    console.log("local storage cleared");
 }
 
 // Call 'payload.nonce' to your server
@@ -52,7 +54,6 @@ async function transactionPaymentNonce(payload, setAmount) {
     let result;
     result = JSON.parse(text);
     console.log("PayPal payment successfull ",result);
-    console.log(customerId)
     return result;
   } 
   catch (error) {
@@ -65,12 +66,12 @@ async function transactionPaymentNonce(payload, setAmount) {
 // Main Code
 window.onload = async () => { 
 
-    //lister for 'new customer' - clears vaulted values
+    //lister for 'new customer' - clears local stored values
     const resetVaultBtn =  document.getElementById("vault-reset")
     if (resetVaultBtn){
         resetVaultBtn.addEventListener("click", () => {
             clearVault();
-            window.location.href = '/btVaultingNewCust.html'; //refresh UI
+            window.location.href = `/html/${int}/VaultingNewCust.html?int=${int}`; //refresh UI
         })
     }
 
@@ -79,9 +80,10 @@ window.onload = async () => {
     console.log(vault.vaulted);
     console.log("Type: ", vault.type);
     console.log("token: ", vault.token);
+    console.log("CustomerID: ", vault.customerId);
 
     if (!vault.vaulted || vault.customerId == null) {
-        window.location.href = '/btVaultingNewCust.html';
+        window.location.href = `/html/${int}/VaultingNewCust.html?int=${int}`;
     }
 
     //To display returning Card button
@@ -146,20 +148,15 @@ window.onload = async () => {
             })
 
             .then(paypalCheckoutInstance => {
-                return paypalCheckoutInstance
-                    .loadPayPalSDK({
+                return paypalCheckoutInstance.loadPayPalSDK({
                         currency: "GBP",
                         intent: "capture",
                         components: "buttons"
                     })
-                    .then(() => paypalCheckoutInstance); // ✅ pass instance forward
+                    .then(() => paypalCheckoutInstance);
             })
 
             .then(paypalCheckoutInstance => {
-            // ✅ confirm SDK actually exists
-            console.log("paypal global:", window.paypal);
-            console.log("paypal.Buttons:", window.paypal?.Buttons);
-
             return paypal.Buttons({
                 fundingSource: paypal.FUNDING.PAYPAL,
 

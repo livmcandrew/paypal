@@ -279,12 +279,6 @@ fetch("/btcheckout")
 
                         countryCode: 'GB',            // <-- set to your selling country 
                         currencyCode: 'GBP', 
-
-                        // We recommend collecting billing address information, at minimum 
-                        // billing postal code, and passing that billing postal code with 
-                        // all Apple Pay transactions as a best practice. 
-                        // requiredBillingContactFields: ["postalAddress"] 
-
                     }); 
 
                     //Show apple pay button 
@@ -335,6 +329,7 @@ fetch("/btcheckout")
                         if (!resp.ok) throw new Error(await resp.text());       
                         session.completePayment(ApplePaySession.STATUS_SUCCESS); 
                         showMessage(("Payment Successful: ", resp.json()), true);  
+                        console.log("Payment Successful: ", resp.json());
     
                         } catch (err) { 
                             console.error('Payment failed:', err); 

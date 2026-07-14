@@ -5,6 +5,9 @@ const randomNumber = Math.floor(Math.random() * 100000)
   .toString()
   .padStart(5, "0");
 const customerId = `${randomNumber}livX`;
+const params = new URLSearchParams(window.location.search);
+const int = params.get('int');
+console.log("Integration selected:", int);
 
 // Get the status if the payment has already been vaulted 
 function getVaultStatus() {
@@ -58,7 +61,7 @@ window.onload = async () => {
     const vault = getVaultStatus();
     if (vault.vaulted) { //if vaulted status is true
         setTimeout(() => {
-            window.location.href = '/btVaultingReturnCust.html';  // <-- returning customer
+            window.location.href = `/html/${int}/VaultingReturnCust.html?int=${int}`;  // <-- returning customer
         }, 200); //
         return;
     }
@@ -194,7 +197,7 @@ window.onload = async () => {
                             console.log(result);
                             alert("✅ Transaction successful!\nCustomer ID: " + result.customerId);    
                             setTimeout(() => {
-                                window.location.href = '/btVaultingReturnCust.html';  // <-- exisiting customer
+                                window.location.href = `/html/${int}/VaultingReturnCust.html?int=${int}`;  // <-- exisiting customer
                             }, 2000); 
                         }
                         } catch (error){
@@ -296,7 +299,7 @@ window.onload = async () => {
                                         
                                         // Redirects user to Existing Customer page
                                         setTimeout(() => {
-                                                window.location.href = '/btVaultingReturnCust.html';  // <-- exisiting customer
+                                                window.location.href = `/html/${int}/VaultingReturnCust.html?int=${int}`;  // <-- exisiting customer
                                             }, 2000); 
                                         return resolve(result);  
                                     } catch (e) {

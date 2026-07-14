@@ -6,7 +6,7 @@ function updateItems() {
   items.forEach(item => {
     const form = item.querySelector('form');
     const button = item.querySelector('button');
-    const path = item.dataset[int];
+    const path = item.dataset[int.toLowerCase()];
     const intInput = item.querySelector('.int-input');
 
     form.setAttribute('action', path);
@@ -15,10 +15,10 @@ function updateItems() {
     // swap button style based on active provider
     button.classList.remove('feature-button', 'pfeature-button');
 
-    if (int === 'ppcp') {
+    if (int === 'PP') {
       button.classList.add('pfeature-button');
       console.log('integration is set to = ' + int);
-    } else if (int === 'braintree') {
+    } else if (int === 'BT') {
       button.classList.add('feature-button');
       console.log('integration is set to = ' + int);
     } else {
@@ -29,6 +29,7 @@ function updateItems() {
     // disable the button if no toggle is selected
     button.disabled = int === "";
   });
+  
 }
 
 toggleBtns.forEach(btn => {
