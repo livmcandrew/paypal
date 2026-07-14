@@ -328,9 +328,9 @@ fetch("/btcheckout")
                         
                         if (!resp.ok) throw new Error(await resp.text());       
                         session.completePayment(ApplePaySession.STATUS_SUCCESS); 
-                        showMessage(("Payment Successful: ", resp.json()), true);  
-                        console.log("Payment Successful: ", resp.json());
-    
+                        const data = await resp.json(); // read the body ONCE
+                        showMessage(`Payment Successful: ${JSON.stringify(data)}`, true);
+                        console.log("Payment Successful:", data);
                         } catch (err) { 
                             console.error('Payment failed:', err); 
                             console.log('Merchant validation failed:', err); 
