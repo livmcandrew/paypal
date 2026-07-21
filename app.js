@@ -19,11 +19,6 @@ app.use((req, res, next) => {
   next();
 });
 
-//For 3DS device fingerprinting (Cardinal/Visa iframe)
-app.use((req, res, next) => {
-  res.setHeader("Permissions-Policy", "payment=*");
-  next();
-});
 
 app.use(json());
 app.use(urlencoded({ extended: false }));
