@@ -210,12 +210,11 @@ fetch("/btcheckout")
         // Base PayPal SDK script options
         var loadPayPalSDKOptions = {
             currency: 'GBP',  // Must match the currency passed in with createPayment
-            intent: 'authorize', // Must match the intent passed in with createPayment
+            intent: 'capture', // Must match the intent passed in with createPayment
             components: 'buttons,messages',
             'enable-funding': 'paylater',
             'buyer-country': 'GB',
-            commit: true,
-            //commit: 'true',
+            commit: false,
             dataAttributes: {
                 amount: setAmount,
             },
@@ -240,11 +239,11 @@ fetch("/btcheckout")
                 },
                 createOrder: function () {
                 var createPaymentRequestOptions = {
-                    flow: 'checkout', // Required
+                    flow: 'checkout',
                     intent: 'capture',
                     currency: 'GBP',
                     amount: setAmount,
-                    userAction: 'PAY'
+                    userAction: 'CONTINUE', 
                 };
 
                 return paypalCheckoutInstance.createPayment(createPaymentRequestOptions);
@@ -266,18 +265,10 @@ fetch("/btcheckout")
 
                         //SHOW RESPONSE
                         .then((result) => {
-                            // document.getElementById("divResponse").innerHTML =
-                            //     "<pre>" +
-                            //     (result.success ? "Transaction successful" : "Transaction failed") +
-                            //     "\n\n" +
-                            //     JSON.stringify(result, null, 2) +
-                            //     "</pre>";
                             resolve(result);
                             })
                             .catch((e) => {
                                 console.error("checkout error", e);
-                                document.getElementById("divResponse").innerHTML =
-                                    "<pre>Checkout error\n\n" + (e && e.message ? e.message : String(e)) + "</pre>";
                                 reject(e);
                             });
                         });

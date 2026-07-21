@@ -216,7 +216,6 @@ fetch("/btcheckout")
                     commit: true,
                     'enable-funding': 'paylater',
                     'buyer-country': 'GB',
-                    //commit: 'true',
                     dataAttributes: {
                         amount: setAmount,
                     },
