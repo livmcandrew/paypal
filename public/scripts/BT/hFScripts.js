@@ -48,6 +48,18 @@ fetch("/btcheckout")
         return;
       }
 
+      // Create 3DS instance
+      braintree.threeDSecure.create({
+        authorization: client_token,   
+        version: 2
+      }, function (threeDSErr, threeDSInstance) {
+        if (threeDSErr) {
+          console.error(threeDSErr);
+          return;
+        }
+        threeDS = threeDSInstance;   // store it in the module-level variable
+      });
+
       // Add Hosted Fields Pay Checkout
       braintree.hostedFields.create({
         preventAutofill: false, //browser to prefill fields
@@ -94,16 +106,15 @@ fetch("/btcheckout")
           }
           
           //Finds the class "hosted-field--label..."
+          //UI changes for floating label pattern
           function findLabel(field) {
             return $('.hosted-field--label[for="' + field.container.id + '"]');
           }
-
           hostedFieldsInstance.on('focus', function (event) {
             var field = event.fields[event.emittedBy];
             
             findLabel(field).addClass('label-float').removeClass('filled');
           });
-          
           // Emulates floating label pattern
           hostedFieldsInstance.on('blur', function (event) {
             var field = event.fields[event.emittedBy];
@@ -117,13 +128,10 @@ fetch("/btcheckout")
               label.addClass('invalid');
             }
           });
-          
           hostedFieldsInstance.on('empty', function (event) {
             var field = event.fields[event.emittedBy];
-
             findLabel(field).removeClass('filled').removeClass('invalid');
           });
-          
           hostedFieldsInstance.on('validityChange', function (event) {
             var field = event.fields[event.emittedBy];
             var label = findLabel(field);
@@ -135,6 +143,7 @@ fetch("/btcheckout")
             }
           });
 
+          //Listener for form submission payment with hosted fields
           $('#cardForm').submit(function (event) {
             event.preventDefault();
 
@@ -143,6 +152,26 @@ fetch("/btcheckout")
                 console.error(err);
                 return;
               }
+
+              //Run 3DS verification on the nonce before checkout
+              threeDS.verifyCard({
+                amount: setAmount,
+                nonce: payload.nonce,
+                bin: payload.details.bin,
+                onLookupComplete: function (data, next) {
+                  next();
+                }
+              }, async function (threeDSErr, threeDSPayload) {
+                if (threeDSErr) {
+                  console.error(threeDSErr);
+                  return;
+                }
+
+                if (!threeDSPayload.liabilityShifted) {
+                  console.log('Liability did not shift', threeDSPayload);
+                  // decide whether to still proceed or block the payment
+                }
+
               try{
                 const response = await fetch("/btcheckout", {
                     method: "POST",
@@ -150,7 +179,7 @@ fetch("/btcheckout")
                     "Content-Type": "application/json",
                     },
                     body: JSON.stringify({
-                      paymentMethodNonce: payload.nonce,
+                      paymentMethodNonce: threeDSPayload.nonce,
                       // deviceData: deviceData,
                       amount: setAmount
                     }),
@@ -163,139 +192,141 @@ fetch("/btcheckout")
                   console.log(result)
                   }
                 } catch (error){
-                  console.error("Error during transaction:", error);
+                    console.error("Error during transaction:", error);
                 }
                     
               });
+       
           });
         });
       });
+    });
 
-      // Add PayPal Checkout component.
-      braintree.paypalCheckout.create({
-        authorization: client_token
-        }, function (paypalCheckoutErr, paypalCheckoutInstance) {
+    // Add PayPal Checkout component.
+    braintree.paypalCheckout.create({
+      authorization: client_token
+      }, function (paypalCheckoutErr, paypalCheckoutInstance) {
 
-          // Base PayPal SDK script options
-          var loadPayPalSDKOptions = {
-              currency: 'GBP',  // Must match the currency passed in with createPayment
-              intent: 'capture', // Must match the intent passed in with createPayment
-              components: 'buttons,messages',
-              'enable-funding': 'paylater',
-              'buyer-country': 'GB',
-              commit: true,
-              //commit: 'true',
-              dataAttributes: {
-                  amount: setAmount,
-              },
-          }
+        // Base PayPal SDK script options
+        var loadPayPalSDKOptions = {
+            currency: 'GBP',  // Must match the currency passed in with createPayment
+            intent: 'authorize', // Must match the intent passed in with createPayment
+            components: 'buttons,messages',
+            'enable-funding': 'paylater',
+            'buyer-country': 'GB',
+            commit: true,
+            //commit: 'true',
+            dataAttributes: {
+                amount: setAmount,
+            },
+        }
+        
+        // Stop if there was a problem creating PayPal Checkout.
+        if (paypalCheckoutErr) {
+          console.error('Error creating PayPal Checkout:', paypalCheckoutErr);
+          return;
+        }
+
+        // Load the PayPal JS SDK
+        paypalCheckoutInstance.loadPayPalSDK(loadPayPalSDKOptions, function () {
+        
+            //ADD regular PAYPAL BUTTON
+            paypal.Buttons({
+                fundingSource: paypal.FUNDING.PAYPAL,
+                style: {
+                    shape: "rect",
+                    color: "gold",
+                    label: "paypal"
+                },
+                createOrder: function () {
+                var createPaymentRequestOptions = {
+                    flow: 'checkout', // Required
+                    intent: 'capture',
+                    currency: 'GBP',
+                    amount: setAmount,
+                    userAction: 'PAY'
+                };
+
+                return paypalCheckoutInstance.createPayment(createPaymentRequestOptions);
+                },
+
+                onApprove: function (data, actions) {
+                    // Return a promise that resolves/rejects when you're done
+                    return new Promise((resolve, reject) => {
+                        paypalCheckoutInstance.tokenizePayment(data, function (err, payload) {
+                        if (err) {
+                            console.error("tokenizePayment error", err);
+                            // document.getElementById("divResponse").innerHTML =
+                            // "<pre>Tokenization failed\n\n" + JSON.stringify(err, null, 2) + "</pre>";
+                            return reject(err);
+                        }
+                        
+                        // Call transcation API 
+                        result = transactionPaymentNonce(payload, setAmount)
+
+                        //SHOW RESPONSE
+                        .then((result) => {
+                            // document.getElementById("divResponse").innerHTML =
+                            //     "<pre>" +
+                            //     (result.success ? "Transaction successful" : "Transaction failed") +
+                            //     "\n\n" +
+                            //     JSON.stringify(result, null, 2) +
+                            //     "</pre>";
+                            resolve(result);
+                            })
+                            .catch((e) => {
+                                console.error("checkout error", e);
+                                document.getElementById("divResponse").innerHTML =
+                                    "<pre>Checkout error\n\n" + (e && e.message ? e.message : String(e)) + "</pre>";
+                                reject(e);
+                            });
+                        });
+                    });
+                },
+
+                onCancel: function (data) {
+                    console.log('PayPal payment cancelled', JSON.stringify(data, 0, 2));
+                },
+
+                onError: function (err) {
+                    console.error('PayPal error', err);
+                }
+            }).render('#paypal-button').then(function () {
+                    // The PayPal button will be rendered in an html element with the ID 'paypal-button'
+            });
+
+            //ADD the PAY LATER BUTTON
+            const payLater = paypal.Buttons({
+                fundingSource: paypal.FUNDING.PAYLATER,
+                style: {
+                    shape: "rect",
+                    color: "gold",
+                    label: "paypal"
+                },
+                createOrder: function () {
+                    return paypalCheckoutInstance.createPayment({
+                        flow: 'checkout',
+                        intent: 'authorize',
+                        currency: 'GBP',
+                        amount: setAmount
+                    });
+                },
+                onApprove: function (data, actions) {
+                    return paypalCheckoutInstance.tokenizePayment(data, function (err, payload) {
+                    // Submit 'payload.nonce' to your server
+                    // Call transcation API 
+                    result = transactionPaymentNonce(payload, setAmount)
+
+                    //SHOW RESPONSE
+                    
+                    });
+                },
+                onError: function (err) {
+                console.error('PayPal error', err);
+                }
+            }).render('#pay-later-button');
           
-          // Stop if there was a problem creating PayPal Checkout.
-          if (paypalCheckoutErr) {
-            console.error('Error creating PayPal Checkout:', paypalCheckoutErr);
-            return;
-          }
-
-          // Load the PayPal JS SDK
-          paypalCheckoutInstance.loadPayPalSDK(loadPayPalSDKOptions, function () {
-          
-              //ADD regular PAYPAL BUTTON
-              paypal.Buttons({
-                  fundingSource: paypal.FUNDING.PAYPAL,
-                  style: {
-                      shape: "rect",
-                      color: "gold",
-                      label: "paypal"
-                  },
-                  createOrder: function () {
-                  var createPaymentRequestOptions = {
-                      flow: 'checkout', // Required
-                      intent: 'capture',
-                      currency: 'GBP',
-                      amount: setAmount,
-                      userAction: 'PAY'
-                  };
-
-                  return paypalCheckoutInstance.createPayment(createPaymentRequestOptions);
-                  },
-
-                  onApprove: function (data, actions) {
-                      // Return a promise that resolves/rejects when you're done
-                      return new Promise((resolve, reject) => {
-                          paypalCheckoutInstance.tokenizePayment(data, function (err, payload) {
-                          if (err) {
-                              console.error("tokenizePayment error", err);
-                              // document.getElementById("divResponse").innerHTML =
-                              // "<pre>Tokenization failed\n\n" + JSON.stringify(err, null, 2) + "</pre>";
-                              return reject(err);
-                          }
-                          
-                          // Call transcation API 
-                          result = transactionPaymentNonce(payload, setAmount)
-
-                          //SHOW RESPONSE
-                          .then((result) => {
-                              // document.getElementById("divResponse").innerHTML =
-                              //     "<pre>" +
-                              //     (result.success ? "Transaction successful" : "Transaction failed") +
-                              //     "\n\n" +
-                              //     JSON.stringify(result, null, 2) +
-                              //     "</pre>";
-                              resolve(result);
-                              })
-                              .catch((e) => {
-                                  console.error("checkout error", e);
-                                  document.getElementById("divResponse").innerHTML =
-                                      "<pre>Checkout error\n\n" + (e && e.message ? e.message : String(e)) + "</pre>";
-                                  reject(e);
-                              });
-                          });
-                      });
-                  },
-
-                  onCancel: function (data) {
-                      console.log('PayPal payment cancelled', JSON.stringify(data, 0, 2));
-                  },
-
-                  onError: function (err) {
-                      console.error('PayPal error', err);
-                  }
-              }).render('#paypal-button').then(function () {
-                      // The PayPal button will be rendered in an html element with the ID 'paypal-button'
-              });
-
-              //ADD the PAY LATER BUTTON
-              const payLater = paypal.Buttons({
-                  fundingSource: paypal.FUNDING.PAYLATER,
-                  style: {
-                      shape: "rect",
-                      color: "gold",
-                      label: "paypal"
-                  },
-                  createOrder: function () {
-                      return paypalCheckoutInstance.createPayment({
-                          flow: 'checkout',
-                          intent: 'authorize',
-                          currency: 'GBP',
-                          amount: setAmount
-                      });
-                  },
-                  onApprove: function (data, actions) {
-                      return paypalCheckoutInstance.tokenizePayment(data, function (err, payload) {
-                      // Submit 'payload.nonce' to your server
-                      // Call transcation API 
-                      result = transactionPaymentNonce(payload, setAmount)
-
-                      //SHOW RESPONSE
-                      
-                      });
-                  },
-                  onError: function (err) {
-                  console.error('PayPal error', err);
-                  }
-              }).render('#pay-later-button');
-            
-          });       
-      });
+        });       
+    });
 
   });
