@@ -2,6 +2,16 @@
 var submitButton = document.getElementById("submit-button");
 var paypalButton = document.getElementById("paypal-button");
 const setAmount = "150.00";
+var billingAddress = {
+    givenName: "Jill",
+    surname: "Doe",
+    phoneNumber: "07919123456",
+    streetAddress: "555 Smith St.",
+    extendedAddress: "#5",
+    locality: "PR",
+    postalCode: "12345",
+    countryCodeAlpha2: "GBP",
+};
 
 // Call 'payload.nonce' to your server
 async function transactionPaymentNonce(payload, setAmount) {
@@ -27,23 +37,29 @@ async function transactionPaymentNonce(payload, setAmount) {
   }
 };
 
-// Apple Pay
 function showMessage(text, success = true) { 
   const messageBox = document.getElementById('result-message'); 
   messageBox.textContent = text; 
   messageBox.style.color = success ? 'green' : 'red'; 
 } 
 
-if (window.ApplePaySession && ApplePaySession.supportsVersion(3) && ApplePaySession.canMakePayments()) { 
-    // This device supports version 3 of Apple Pay. 
-    console.log("ApplePay supported") 
-} 
-if (!window.ApplePaySession) { 
-    console.error('This device does not support Apple Pay'); 
-} 
-if (!ApplePaySession.canMakePayments()) { 
-    console.error('This device is not capable of making Apple Pay payments'); 
-} 
+// Apple Pay
+// if (window.ApplePaySession && ApplePaySession.supportsVersion(3) && ApplePaySession.canMakePayments()) { 
+//     // This device supports version 3 of Apple Pay. 
+//     console.log("ApplePay supported") 
+// } 
+// if (!window.ApplePaySession) { 
+//     console.error('This device does not support Apple Pay'); 
+// } 
+// if (!ApplePaySession.canMakePayments()) { 
+//     console.error('This device is not capable of making Apple Pay payments'); 
+// } 
+
+// Google Pay   
+var googleButton = document.querySelector('#google-pay-button');
+var paymentsClient = new google.payments.api.PaymentsClient({
+  environment: 'TEST' 
+});
 
 fetch("/btcheckout")
     .then((response) => {
@@ -168,11 +184,11 @@ fetch("/btcheckout")
 
                 //Run 3DS verification on the nonce before checkout
                 threeDS.verifyCard({
-                amount: setAmount,
-                nonce: payload.nonce,
-                bin: payload.details.bin,
-                onLookupComplete: function (data, next) {
-                    next();
+                    amount: setAmount,
+                    nonce: payload.nonce,
+                    bin: payload.details.bin,
+                    onLookupComplete: function (data, next) {
+                        next();
                 }
                 }, async function (threeDSErr, threeDSPayload) {
                 if (threeDSErr) {
@@ -213,7 +229,7 @@ fetch("/btcheckout")
                     currency: 'GBP',  // Must match the currency passed in with createPayment
                     intent: 'capture', // Must match the intent passed in with createPayment
                     components: 'buttons,messages',
-                    commit: true,
+                    commit: false,
                     'enable-funding': 'paylater',
                     'buyer-country': 'GB',
                     dataAttributes: {
@@ -244,7 +260,7 @@ fetch("/btcheckout")
                             intent: 'capture',
                             currency: 'GBP',
                             amount: setAmount,
-                            //userAction: 'CONTINUE'
+                            userAction: 'CONITUE'
                         };
                         
                         //adding line items to the request options 
@@ -334,7 +350,7 @@ fetch("/btcheckout")
                     // }).render('#pay-later-button');
                 
                 });       
-            });
+        });
 
         // Add Apple Pay Checkout
         braintree.applePay.create({ 
@@ -400,7 +416,6 @@ fetch("/btcheckout")
                         method: 'POST', 
                         headers: { 'Content-Type': 'application/json' }, 
                         body: JSON.stringify(body) 
-
                     }); 
                     
                     if (!resp.ok) throw new Error(await resp.text());       
@@ -417,7 +432,66 @@ fetch("/btcheckout")
                 session.begin(); 
             }) 
         }); 
-            
-    
+        
+       // Add Google Pay Checkout
+        braintree.googlePayment.create({
+            client: clientInstance,
+            googlePayVersion: 2,
+            googleMerchantId: 'your-merchant-id'
+        }, function (googlePayErr, googlePaymentInstance) {
+            if (googlePayErr) {
+                console.error('Error creating googlePaymentInstance:', googlePayErr);
+                return;
+            }
+
+            paymentsClient.isReadyToPay({
+                apiVersion: 2,
+                apiVersionMinor: 0,
+                allowedPaymentMethods: googlePaymentInstance.createPayment,
+                existingPaymentMethodRequired: true,
+            }).then(function (response) {
+                if (response.result) {
+                    googleButton.addEventListener('click', function (event) {
+                        event.preventDefault();
+
+                        var paymentDataRequest = googlePaymentInstance.createPaymentDataRequest({
+                            transactionInfo: {
+                                currencyCode: 'GBP',
+                                totalPriceStatus: 'FINAL',
+                                totalPrice: setAmount
+                            }
+                        });
+
+                        var cardPaymentMethod = paymentDataRequest.allowedPaymentMethods[0];
+                        cardPaymentMethod.parameters.billingAddressRequired = true;
+                        cardPaymentMethod.parameters.billingAddressParameters = billingAddress;
+
+                        paymentsClient.loadPaymentData(paymentDataRequest).then(function (paymentData) {
+                            googlePaymentInstance.parseResponse(paymentData, async function (err, result) {
+                                if (err) {
+                                    // Handle parsing error
+                                    console.error('Error parsing Google Pay response:', err);
+                                    return;
+                                }
+                                // Send result.nonce to your server
+                                // paymentData will contain the billingAddress for card payments
+                                const resp = await fetch('/btcheckout', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify(body)
+                                });
+                            });
+                        }).catch(function (err) {
+                            // Handle Google Pay errors
+                            console.error('Error loading Google Pay payment data:', err);
+                        });
+                    });
+                }
+            }).catch(function (err) {
+                // Handle errors
+                console.error('Error checking Google Pay readiness:', err);
+            });
         });
-    });
+
+    }); 
+});

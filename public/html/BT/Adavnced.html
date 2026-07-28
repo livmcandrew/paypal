@@ -5,15 +5,22 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="Permissions-Policy" content="payment=*">
+
+    <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://js.braintreegateway.com/web/3.134.0/js/hosted-fields.min.js"></script>
     <script src="https://js.braintreegateway.com/web/3.134.0/js/three-d-secure.min.js"></script>
+    <script src="https://js.braintreegateway.com/web/3.134.0/js/data-collector.min.js"></script>
      <!-- Braintree core client -->
     <script src="https://js.braintreegateway.com/web/3.134.0/js/client.min.js"></script>
     <!-- PayPal Checkout for Braintree -->
     <script src="https://js.braintreegateway.com/web/3.134.0/js/paypal-checkout.min.js"></script>
     <!-- Apple Pay -->
     <script src="https://js.braintreegateway.com/web/3.134.0/js/apple-pay.min.js"></script> 
+    <!-- Google Pay -->
+    <script src="https://js.braintreegateway.com/web/3.134.0/js/google-payment.min.js"></script>
+    <script src="https://pay.google.com/gp/p/js/pay.js"></script>
+
     <link rel="stylesheet" href="/styles/styles.css">
     <script src="/scripts/BT/advancedScripts.js" defer></script>
     <title>Liv's Site</title>
@@ -99,6 +106,7 @@
                 <button type="submit" class="pay-button" id="submit-button">Submit payment</button>
                 <div class="paypal-wrap"> 
                   <button id="apple-pay-button" class="pay-button" style="display: none; -webkit-appearance: -apple-pay-button; -apple-pay-button-type: plain;"> </button>  
+                  <button id="google-pay-button" class="pay-button"> </button>  
                   <div id="paypal-button"></div>
                   <div id="pay-later-button"></div>
 
