@@ -44,16 +44,16 @@ function showMessage(text, success = true) {
 } 
 
 // Apple Pay
-// if (window.ApplePaySession && ApplePaySession.supportsVersion(3) && ApplePaySession.canMakePayments()) { 
-//     // This device supports version 3 of Apple Pay. 
-//     console.log("ApplePay supported") 
-// } 
-// if (!window.ApplePaySession) { 
-//     console.error('This device does not support Apple Pay'); 
-// } 
-// if (!ApplePaySession.canMakePayments()) { 
-//     console.error('This device is not capable of making Apple Pay payments'); 
-// } 
+if (window.ApplePaySession && ApplePaySession.supportsVersion(3) && ApplePaySession.canMakePayments()) { 
+    // This device supports version 3 of Apple Pay. 
+    console.log("ApplePay supported") 
+} 
+if (!window.ApplePaySession) { 
+    console.error('This device does not support Apple Pay'); 
+} 
+if (!ApplePaySession.canMakePayments()) { 
+    console.error('This device is not capable of making Apple Pay payments'); 
+} 
 
 // Google Pay   
 var googleButton = document.querySelector('#google-pay-button');
