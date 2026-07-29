@@ -437,7 +437,7 @@ fetch("/btcheckout")
         braintree.googlePayment.create({
             client: clientInstance,
             googlePayVersion: 2,
-            googleMerchantId: 'your-merchant-id'
+            //googleMerchantId: 'your-merchant-id'
         }, function (googlePayErr, googlePaymentInstance) {
             if (googlePayErr) {
                 console.error('Error creating googlePaymentInstance:', googlePayErr);
@@ -488,7 +488,7 @@ fetch("/btcheckout")
                                 const data = await resp.json();
                                 console.log('Google Pay payment successful:', data);
                             });
-                            
+
                         }).catch(function (err) {
                             console.error('Error loading Google Pay payment data:', err);
                         });
