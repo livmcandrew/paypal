@@ -452,6 +452,7 @@ fetch("/btcheckout")
                     totalPrice: setAmount
                 }
             });
+            console.log('Full paymentDataRequest:', JSON.stringify(paymentDataRequest, null, 2));
 
             paymentsClient.isReadyToPay({
                 apiVersion: 2,
