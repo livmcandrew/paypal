@@ -370,7 +370,7 @@ fetch("/btcheckout")
                         amount: setAmount 
                     }, 
 
-                    countryCode: 'GB',            // <-- set to your selling country 
+                    countryCode: 'GB',           
                     currencyCode: 'GBP', 
                 }); 
 
@@ -444,23 +444,24 @@ fetch("/btcheckout")
                 return;
             }
 
+            // Build the request once — reuse it below
+            var paymentDataRequest = googlePaymentInstance.createPaymentDataRequest({
+                transactionInfo: {
+                    currencyCode: 'GBP',
+                    totalPriceStatus: 'FINAL',
+                    totalPrice: setAmount
+                }
+            });
+
             paymentsClient.isReadyToPay({
                 apiVersion: 2,
                 apiVersionMinor: 0,
-                allowedPaymentMethods: googlePaymentInstance.createPayment,
+                allowedPaymentMethods: paymentDataRequest.allowedPaymentMethods,  
                 existingPaymentMethodRequired: true,
             }).then(function (response) {
                 if (response.result) {
                     googleButton.addEventListener('click', function (event) {
                         event.preventDefault();
-
-                        var paymentDataRequest = googlePaymentInstance.createPaymentDataRequest({
-                            transactionInfo: {
-                                currencyCode: 'GBP',
-                                totalPriceStatus: 'FINAL',
-                                totalPrice: setAmount
-                            }
-                        });
 
                         var cardPaymentMethod = paymentDataRequest.allowedPaymentMethods[0];
                         cardPaymentMethod.parameters.billingAddressRequired = true;
@@ -469,26 +470,31 @@ fetch("/btcheckout")
                         paymentsClient.loadPaymentData(paymentDataRequest).then(function (paymentData) {
                             googlePaymentInstance.parseResponse(paymentData, async function (err, result) {
                                 if (err) {
-                                    // Handle parsing error
                                     console.error('Error parsing Google Pay response:', err);
                                     return;
                                 }
-                                // Send result.nonce to your server
-                                // paymentData will contain the billingAddress for card payments
+
+                                const body = { 
+                                    paymentMethodNonce: nonce, 
+                                    amount: paymentRequest.total.amount 
+                                }; 
+
                                 const resp = await fetch('/btcheckout', {
                                     method: 'POST',
                                     headers: { 'Content-Type': 'application/json' },
                                     body: JSON.stringify(body)
                                 });
+                                if (!resp.ok) throw new Error(await resp.text());
+                                const data = await resp.json();
+                                console.log('Google Pay payment successful:', data);
                             });
+                            
                         }).catch(function (err) {
-                            // Handle Google Pay errors
                             console.error('Error loading Google Pay payment data:', err);
                         });
                     });
                 }
             }).catch(function (err) {
-                // Handle errors
                 console.error('Error checking Google Pay readiness:', err);
             });
         });
