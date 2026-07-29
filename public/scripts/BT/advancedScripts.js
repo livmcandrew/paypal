@@ -468,6 +468,14 @@ fetch("/btcheckout")
                         cardPaymentMethod.parameters.billingAddressRequired = true;
                         cardPaymentMethod.parameters.billingAddressParameters = billingAddress;
 
+                         cardPaymentMethod.tokenizationSpecification = {
+                            type: 'PAYMENT_GATEWAY',
+                            parameters: {
+                                gateway: 'example',
+                                gatewayMerchantId: 'exampleGatewayMerchantId'
+                            }
+                        };
+
                         paymentsClient.loadPaymentData(paymentDataRequest).then(function (paymentData) {
                             googlePaymentInstance.parseResponse(paymentData, async function (err, result) {
                                 if (err) {
