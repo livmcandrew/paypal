@@ -361,4 +361,29 @@ router.post("/chargeVaulted", express.json(), (req, res) => {
   );
 });
 
+// Merchant Initiated Transaction (MIT) route
+router.post("/MIT", express.json(), (req, res) => {
+  const { paymentMethodToken, amount, customerId, transactionSource } = req.body;
+
+  gateway.transaction.sale(
+    {
+      amount,
+      paymentMethodToken,
+      customerId,
+      transactionSource,
+      merchantAccountId: "liv_gbp",
+      options: { submitForSettlement: true },
+    },
+    (err, result) => {
+      if (err) {
+        return res.status(500).json({ success: false, err });
+      }
+      if (!result?.success) {
+        return res.status(400).json({ success: false, result });
+      }
+      return res.json({ success: true, transactionId: result.transaction.id, result });
+    }
+  );
+});
+
 module.exports = router;

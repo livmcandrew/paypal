@@ -433,7 +433,7 @@ fetch("/btcheckout")
             }) 
         }); 
         
-       // Add Google Pay Checkout
+        // Add Google Pay Checkout
         braintree.googlePayment.create({
             client: clientInstance,
             googlePayVersion: 2,
@@ -449,7 +449,7 @@ fetch("/btcheckout")
                 transactionInfo: {
                     currencyCode: 'GBP',
                     totalPriceStatus: 'FINAL',
-                    totalPrice: setAmount
+                    totalPrice: '100'
                 }
             });
             console.log('Full paymentDataRequest:', JSON.stringify(paymentDataRequest, null, 2));
@@ -493,6 +493,7 @@ fetch("/btcheckout")
                                     headers: { 'Content-Type': 'application/json' },
                                     body: JSON.stringify(body)
                                 });
+                                
                                 if (!resp.ok) throw new Error(await resp.text());
                                 const data = await resp.json();
                                 console.log('Google Pay payment successful:', data);
