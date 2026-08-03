@@ -56,7 +56,7 @@ if (!ApplePaySession.canMakePayments()) {
 } 
 
 // Google Pay   
-var googleButton = document.querySelector('#google-pay-button');
+var googleButton = document.getElementById('#google-pay-button');
 var paymentsClient = new google.payments.api.PaymentsClient({
   environment: 'TEST' 
 });
@@ -437,44 +437,46 @@ fetch("/btcheckout")
         braintree.googlePayment.create({
             client: clientInstance,
             googlePayVersion: 2,
-            //googleMerchantId: 'your-merchant-id'
         }, function (googlePayErr, googlePaymentInstance) {
             if (googlePayErr) {
                 console.error('Error creating googlePaymentInstance:', googlePayErr);
                 return;
             }
 
-            // Build the request once — reuse it below
-            var paymentDataRequest = googlePaymentInstance.createPaymentDataRequest({
-                transactionInfo: {
-                    currencyCode: 'GBP',
-                    totalPriceStatus: 'FINAL',
-                    totalPrice: '100'
-                }
-            });
-            console.log('Full paymentDataRequest:', JSON.stringify(paymentDataRequest, null, 2));
-
             paymentsClient.isReadyToPay({
                 apiVersion: 2,
                 apiVersionMinor: 0,
-                allowedPaymentMethods: paymentDataRequest.allowedPaymentMethods,  
+                allowedPaymentMethods: googlePaymentInstance.createPaymentDataRequest().allowedPaymentMethods,
                 existingPaymentMethodRequired: true,
             }).then(function (response) {
                 if (response.result) {
-                    googleButton.addEventListener('click', function (event) {
+                    console.log('Google Pay is ready to pay');
+
+                    // Create the actual Google-branded button and render it
+                    var button = paymentsClient.createButton({
+                        onClick: onGooglePayClick,
+                        allowedPaymentMethods: googlePaymentInstance.createPaymentDataRequest().allowedPaymentMethods
+                    });
+                    document.querySelector('#google-pay-button').appendChild(button);
+
+                    function onGooglePayClick(event) {
                         event.preventDefault();
+
+                        var paymentDataRequest = googlePaymentInstance.createPaymentDataRequest({
+                            transactionInfo: {
+                                currencyCode: 'GBP',
+                                totalPriceStatus: 'FINAL',
+                                totalPrice: setAmount   // use your existing variable, not hardcoded '100'
+                            }
+                        });
 
                         var cardPaymentMethod = paymentDataRequest.allowedPaymentMethods[0];
                         cardPaymentMethod.parameters.billingAddressRequired = true;
-                        cardPaymentMethod.parameters.billingAddressParameters = billingAddress;
-
-                         cardPaymentMethod.tokenizationSpecification = {
-                            type: 'PAYMENT_GATEWAY',
-                            parameters: {
-                                gateway: 'example',
-                                gatewayMerchantId: 'exampleGatewayMerchantId'
-                            }
+                        cardPaymentMethod.parameters.billingAddressParameters = {
+                            format: 'FULL',
+                            phoneNumberRequired: true
                         };
+                        // Don't touch tokenizationSpecification — leave what Braintree set
 
                         paymentsClient.loadPaymentData(paymentDataRequest).then(function (paymentData) {
                             googlePaymentInstance.parseResponse(paymentData, async function (err, result) {
@@ -483,26 +485,20 @@ fetch("/btcheckout")
                                     return;
                                 }
 
-                                const body = { 
-                                    paymentMethodNonce: nonce, 
-                                    amount: paymentRequest.total.amount 
-                                }; 
-
-                                const resp = await fetch('/btcheckout', {
-                                    method: 'POST',
-                                    headers: { 'Content-Type': 'application/json' },
-                                    body: JSON.stringify(body)
-                                });
-                                
-                                if (!resp.ok) throw new Error(await resp.text());
-                                const data = await resp.json();
-                                console.log('Google Pay payment successful:', data);
+                                try {
+                                    const data = await transactionPaymentNonce(result, setAmount);
+                                    if (data.success) {
+                                        showMessage(`Payment Successful: Transaction ID ${data.transactionId}`, true);
+                                        console.log('Google Pay payment successful:', data);
+                                    }
+                                } catch (error) {
+                                    console.error('Error during transaction:', error);
+                                }
                             });
-
                         }).catch(function (err) {
                             console.error('Error loading Google Pay payment data:', err);
                         });
-                    });
+                    }
                 }
             }).catch(function (err) {
                 console.error('Error checking Google Pay readiness:', err);
