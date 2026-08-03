@@ -229,7 +229,7 @@ fetch("/btcheckout")
                     currency: 'GBP',  // Must match the currency passed in with createPayment
                     intent: 'capture', // Must match the intent passed in with createPayment
                     components: 'buttons,messages',
-                    commit: false,
+                    commit: true,
                     'enable-funding': 'paylater',
                     'buyer-country': 'GB',
                     dataAttributes: {
@@ -260,7 +260,7 @@ fetch("/btcheckout")
                             intent: 'capture',
                             currency: 'GBP',
                             amount: setAmount,
-                            userAction: 'CONITUE'
+                            userAction: 'PAY'
                         };
                         
                         //adding line items to the request options 
