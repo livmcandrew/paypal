@@ -334,7 +334,11 @@ fetch("/btcheckout")
                             });
                         },
                         onApprove: function (data, actions) {
-                            return paypalCheckoutInstance.tokenizePayment(data, function (err, payload) {
+                            return paypalCheckoutInstance.tokenizePayment(data, async function (err, payload) {
+                            // Submit 'payload.nonce' to your server
+                            // Call transcation API 
+                            result = transactionPaymentNonce(payload, setAmount)
+
                             try {
                                 // Call transcation API 
                                 const result = await transactionPaymentNonce(payload, setAmount)
@@ -349,11 +353,10 @@ fetch("/btcheckout")
                                 }
                             });
                         },
-
+                        
                         onError: function (err) {
                             console.error('PayPal error', err);
                         }
-                        
                     }).render('#pay-later-button');
                 
                 });       
