@@ -275,7 +275,6 @@ fetch("/btcheckout")
                                 productCode: "Livs-test-123",
                             }
                         ];          
-                        //createPaymentRequestOptions.userAuthenticationEmail =  email; 
 
                         return paypalCheckoutInstance.createPayment(createPaymentRequestOptions);
                         },
@@ -319,35 +318,43 @@ fetch("/btcheckout")
                     });
 
                     //ADD the PAY LATER BUTTON
-                    // const payLater = paypal.Buttons({
-                    //     fundingSource: paypal.FUNDING.PAYLATER,
-                    //     style: {
-                    //         shape: "rect",
-                    //         color: "gold",
-                    //         label: "paypal"
-                    //     },
-                    //     createOrder: function () {
-                    //         return paypalCheckoutInstance.createPayment({
-                    //             flow: 'checkout',
-                    //             intent: 'authorize',
-                    //             currency: 'GBP',
-                    //             amount: setAmount
-                    //         });
-                    //     },
-                    //     onApprove: function (data, actions) {
-                    //         return paypalCheckoutInstance.tokenizePayment(data, function (err, payload) {
-                    //         // Submit 'payload.nonce' to your server
-                    //         // Call transcation API 
-                    //         result = transactionPaymentNonce(payload, setAmount)
+                    const payLater = paypal.Buttons({
+                        fundingSource: paypal.FUNDING.PAYLATER,
+                        style: {
+                            shape: "rect",
+                            color: "gold",
+                            label: "paypal"
+                        },
+                        createOrder: function () {
+                            return paypalCheckoutInstance.createPayment({
+                                flow: 'checkout',
+                                intent: 'authorize',
+                                currency: 'GBP',
+                                amount: setAmount
+                            });
+                        },
+                        onApprove: function (data, actions) {
+                            return paypalCheckoutInstance.tokenizePayment(data, function (err, payload) {
+                            try {
+                                // Call transcation API 
+                                const result = await transactionPaymentNonce(payload, setAmount)
+                                //SHOW RESPONSE
+                                if (result.success) {
+                                    console.log(result)
+                                    resolve(result);
+                                }
+                                } catch (error){
+                                    console.error("Error during transaction:", error);
+                                    reject(error);
+                                }
+                            });
+                        },
 
-                    //         //SHOW RESPONSE
-                            
-                    //         });
-                    //     },
-                    //     onError: function (err) {
-                    //     console.error('PayPal error', err);
-                    //     }
-                    // }).render('#pay-later-button');
+                        onError: function (err) {
+                            console.error('PayPal error', err);
+                        }
+                        
+                    }).render('#pay-later-button');
                 
                 });       
         });
