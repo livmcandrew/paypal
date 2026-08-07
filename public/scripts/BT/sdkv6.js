@@ -46,7 +46,7 @@ fetch("/btcheckout")
             } 
             catch (error) {
                 console.error("Error during transaction:", error);
-                throw error;x
+                throw error;
             }
           });
       },

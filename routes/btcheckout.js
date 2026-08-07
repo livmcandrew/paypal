@@ -387,3 +387,22 @@ router.post("/MIT", express.json(), (req, res) => {
 });
 
 module.exports = router;
+
+// FX quote - The markup stacks on top of the Braintree fee, not instead of it. 
+router.post("/fx-quote", (req, res) => {
+  const { baseCurrency, quoteCurrency, baseAmount } = req.body;
+  gateway.exchangeRateQuote.generate({  
+    quotes: 
+      [{ 
+        baseCurrency, 
+        quoteCurrency, 
+        baseAmount 
+      }] 
+  }, (err, response) => {
+    if (err) {
+      console.error('Error generating exchange rate quote:', err);
+      return res.status(500).json({ success: false, error: err.message });
+    }
+    res.json(response.exchangeRateQuotePayload.quotes);
+  });
+});

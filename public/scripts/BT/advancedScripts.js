@@ -325,6 +325,7 @@ fetch("/btcheckout")
                             color: "gold",
                             label: "paypal"
                         },
+                        
                         createOrder: function () {
                             return paypalCheckoutInstance.createPayment({
                                 flow: 'checkout',
@@ -333,6 +334,7 @@ fetch("/btcheckout")
                                 amount: setAmount
                             });
                         },
+
                         onApprove: function (data, actions) {
                             return paypalCheckoutInstance.tokenizePayment(data, async function (err, payload) {
                             // Submit 'payload.nonce' to your server
@@ -353,7 +355,7 @@ fetch("/btcheckout")
                                 }
                             });
                         },
-                        
+
                         onError: function (err) {
                             console.error('PayPal error', err);
                         }
@@ -465,7 +467,7 @@ fetch("/btcheckout")
                     // Create the actual Google-branded button and render it
                     var button = paymentsClient.createButton({
                         onClick: onGooglePayClick,
-                        allowedPaymentMethods: googlePaymentInstance.createPaymentDataRequest().allowedPaymentMethods
+                        //allowedPaymentMethods: googlePaymentInstance.createPaymentDataRequest().allowedPaymentMethods
                     });
                     document.querySelector('#google-pay-button').appendChild(button);
 

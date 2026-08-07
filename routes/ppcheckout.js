@@ -118,9 +118,7 @@ router.post("/api/orders", async (req, res) => {
 });
 
 
-/**
- * Capture payment for the created order to complete the transaction.
- */
+/**Capture payment for the created order to complete the transaction.*/
 const captureOrder = async (orderID) => {
     const collect = {
         id: orderID,
@@ -156,7 +154,6 @@ router.post("/api/orders/:orderID/capture", async (req, res) => {
         res.status(500).json({ error: "Failed to capture order." });
     }
 });
-
 
 /*Create an order for APP SWITCH to start the transaction.*/
 const createOrderAPPS = async (cart) => {
