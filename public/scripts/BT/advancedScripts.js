@@ -467,7 +467,7 @@ fetch("/btcheckout")
                     // Create the actual Google-branded button and render it
                     var button = paymentsClient.createButton({
                         onClick: onGooglePayClick,
-                        //allowedPaymentMethods: googlePaymentInstance.createPaymentDataRequest().allowedPaymentMethods
+                        allowedPaymentMethods: googlePaymentInstance.createPaymentDataRequest().allowedPaymentMethods
                     });
                     document.querySelector('#google-pay-button').appendChild(button);
 
@@ -478,7 +478,15 @@ fetch("/btcheckout")
                             transactionInfo: {
                                 currencyCode: 'GBP',
                                 totalPriceStatus: 'FINAL',
-                                totalPrice: setAmount   // use your existing variable, not hardcoded '100'
+                                totalPrice: setAmount,
+                                displayItems: [
+                                    {
+                                        label: 'Test Product - Cashmere Knitted Jumper',
+                                        type: 'LINE_ITEM',
+                                        price: '143.00',   // string, e.g. '85.00'
+                                        status: 'FINAL'
+                                    }
+                                ]
                             }
                         });
 
