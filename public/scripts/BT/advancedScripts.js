@@ -479,19 +479,24 @@ fetch("/btcheckout")
                                 currencyCode: 'GBP',
                                 totalPriceStatus: 'FINAL',
                                 totalPrice: setAmount,
-                                //     displayItems: [
-                                //         {
-                                //             label: 'Test Product - Cashmere Knitted Jumper',
-                                //             type: 'LINE_ITEM',
-                                //             price: '143.00',   
-                                //             status: 'FINAL'
-                                //         },
-                                //         {
-                                //             label: 'Tax',
-                                //             type: 'TAX',
-                                //             price: '7.00',   
-                                //         }
-                                //     ]
+                                displayItems: [
+                                    {
+                                        label: 'Test Product - Cashmere Knitted Jumper',
+                                        type: 'LINE_ITEM',
+                                        price: '143.00',   
+                                        status: 'FINAL'
+                                    },
+                                    {
+                                        label: 'Subtotal',
+                                        type: 'SUBTOTAL',
+                                        price: '143.00'
+                                    },
+                                    {
+                                        label: 'Tax',
+                                        type: 'TAX',
+                                        price: '7.00',   
+                                    }
+                                ]
                             }
                         });
 
