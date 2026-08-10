@@ -483,8 +483,13 @@ fetch("/btcheckout")
                                     {
                                         label: 'Test Product - Cashmere Knitted Jumper',
                                         type: 'LINE_ITEM',
-                                        price: '143.00',   // string, e.g. '85.00'
+                                        price: '143.00',   
                                         status: 'FINAL'
+                                    },
+                                    {
+                                        label: 'Tax',
+                                        type: 'TAX',
+                                        price: '7.00',   
                                     }
                                 ]
                             }
