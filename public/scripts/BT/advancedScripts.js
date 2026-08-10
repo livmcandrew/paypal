@@ -478,18 +478,13 @@ fetch("/btcheckout")
                             transactionInfo: {
                                 currencyCode: 'GBP',
                                 totalPriceStatus: 'FINAL',
-                                totalPrice: setAmount,
+                                totalPrice: '150.00',
                                 displayItems: [
                                     {
                                         label: 'Test Product - Cashmere Knitted Jumper',
                                         type: 'LINE_ITEM',
                                         price: '143.00',   
                                         status: 'FINAL'
-                                    },
-                                    {
-                                        label: 'Subtotal',
-                                        type: 'SUBTOTAL',
-                                        price: '143.00'
                                     },
                                     {
                                         label: 'Tax',
