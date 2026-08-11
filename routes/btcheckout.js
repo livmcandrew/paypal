@@ -82,7 +82,7 @@ router.post("/auth",  express.json(), (req, res) => {
       amount,
       merchantAccountId: "liv_gbp",
       options: {
-        //submitForSettlement: true,
+        submitForSettlement: false, // AUTH only
         storeInVaultOnSuccess: !!storeInVault, // vault only when asked
       },
     },
@@ -111,6 +111,31 @@ router.post("/auth",  express.json(), (req, res) => {
         transactionId: result.transaction.id,
         paymentMethodToken,
         customerId,
+        result,
+      });
+    }
+  );
+});
+
+// GET transcation.submitForSettlement API to capture AUTH sale
+router.post("/submitForSettlement", express.json(), (req, res) => {
+  const { transactionId, amount } = req.body;
+
+  gateway.transaction.submitForSettlement(
+    transactionId,
+    amount,
+    (error, result) => {
+      if (error || !result?.success) {
+        return res.status(500).send({
+          success: false,
+          error: error?.message || result?.message || error,
+          result,
+        });
+      }
+
+      return res.send({
+        success: true,
+        transactionId: result.transaction.id,
         result,
       });
     }

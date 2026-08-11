@@ -1,6 +1,9 @@
 //Client Side implementation 
 var submitButton = document.getElementById("submit-button");
 var paypalButton = document.getElementById("paypal-button");
+var captureButton = document.getElementById("capture-button");
+var payLaterButton = document.getElementById("pay-later-button");
+var payLaterMessage = document.getElementById("pay-later-message");
 const setAmount = "100.00";
 var threeDSecureParameters = {
     amount: setAmount,
@@ -17,8 +20,8 @@ var threeDSecureParameters = {
         countryCodeAlpha2: "US",
     },
 };
-// Call 'payload.nonce' to your server
-async function transactionPaymentNonce(payload, setAmount) {
+// Call 'payload.nonce' to your Authorization API 
+async function authTransactionPaymentNonce(payload, setAmount) {
   try {
     console.log("Initiating Auth transaction:");
     const response = await fetch("/btcheckout/auth", {
@@ -26,6 +29,30 @@ async function transactionPaymentNonce(payload, setAmount) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         paymentMethodNonce: payload.nonce,
+        amount: setAmount,
+      })
+    });
+
+    const text = await response.text();
+    let result;
+    result = JSON.parse(text);
+    return result;
+  } 
+  catch (error) {
+    console.error("Error during transaction:", error);
+    // Handle network errors or JSON parsing errors
+    throw error; // Re-throw to allow the caller to handle the error as needed
+  }
+};
+
+// Call submitForSettlement to Capture transaction API
+async function transactionSubmitForSettlement(transactionId, setAmount) {
+  try {
+    const response = await fetch("/btcheckout/submitForSettlement", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        transactionId,
         amount: setAmount,
       })
     });
@@ -107,35 +134,60 @@ fetch("/btcheckout")
                             },
 
                             onApprove: function (data, actions) {
-                                // Return a promise that resolves/rejects when you're done
                                 return new Promise((resolve, reject) => {
-                                    paypalCheckoutInstance.tokenizePayment(data, function (err, payload) {
-                                    if (err) {
-                                        console.error("tokenizePayment error", err);
-                                        document.getElementById("result-message").innerHTML =
-                                        "<pre>Tokenization failed\n\n" + JSON.stringify(err, null, 2) + "</pre>";
-                                        return reject(err);
-                                    }
-                                    
-                                    // Call transcation API 
-                                    result = transactionPaymentNonce(payload, setAmount)
-
-                                    //SHOW RESPONSE
-                                    .then((result) => {
-                                        document.getElementById("result-message").innerHTML =
-                                            "<pre>" +
-                                            (result.success ? "Transaction successful" : "Transaction failed") +
-                                            "\n\n" +
-                                            JSON.stringify(result, null, 2) +
-                                            "</pre>";
-                                        resolve(result);
-                                        })
-                                        .catch((e) => {
-                                            console.error("checkout error", e);
+                                    paypalCheckoutInstance.tokenizePayment(data, async function (err, payload) {
+                                        if (err) {
+                                            console.error("tokenizePayment error", err);
                                             document.getElementById("result-message").innerHTML =
-                                                "<pre>Checkout error\n\n" + (e && e.message ? e.message : String(e)) + "</pre>";
-                                            reject(e);
-                                        });
+                                                "<pre>Tokenization failed\n\n" + JSON.stringify(err, null, 2) + "</pre>";
+                                            return reject(err);
+                                        }
+
+                                        // Authorize the transaction 
+                                        try {
+                                            const authResult = await authTransactionPaymentNonce(payload, setAmount);
+                                            
+                                            if (!authResult.success) {
+                                                return reject(new Error("Authorization failed"));
+                                            }
+
+                                            // Store it for the capture button, don't capture yet
+                                            pendingTransaction = { id: authResult.transactionId, amount: setAmount };
+                                    
+                                            console.log("Authorization successful, transaction ID:", pendingTransaction.id);
+                                            captureButton.hidden = false;
+                                            paypalButton.hidden = true;
+                                            payLaterButton.hidden = true;
+                                            payLaterMessage.hidden = true;
+
+                                            resolve(authResult); 
+
+                                        } catch (error) {
+                                            console.error("Error during authorization:", error);
+                                            reject(error);
+                                        }
+
+                                        //     // call capture API after 3 seconds delay
+                                        //     setTimeout(async function () {
+                                        //         console.log("Delaying for 3 seconds before calling capture API...");
+                                        //         try {
+                                        //             const captureResult = await transactionSubmitForSettlement(authResult.transactionId, setAmount);
+                                        //             if (captureResult.success) {
+                                        //                 console.log(captureResult);
+                                        //                 resolve(captureResult);
+                                        //             }
+                                        //         } catch (error) {
+                                        //             console.error("Error during transaction:", error);
+                                        //             reject(error);
+                                        //         }
+                                        //     }, 3000);
+                                        // })
+                                        // .catch((e) => {
+                                        //     console.error("checkout error", e);
+                                        //     document.getElementById("result-message").innerHTML =
+                                        //         "<pre>Checkout error\n\n" + (e && e.message ? e.message : String(e)) + "</pre>";
+                                        //     reject(e);
+                                        // });
                                     });
                                 });
                             },
@@ -187,3 +239,32 @@ fetch("/btcheckout")
         
         });
     });
+
+
+//for Capturing the payment after authorization
+document.getElementById("capture-button").addEventListener("click", async function () {
+    if (!pendingTransaction) {
+        console.error("No authorized transaction to capture");
+        return;
+    }
+
+    this.hidden = false;
+
+    try {
+        const captureResult = await transactionSubmitForSettlement(pendingTransaction.id, pendingTransaction.amount);
+
+        if (captureResult.success) {
+            console.log("Capture successful:", captureResult);
+            console.log("Captured transaction ID:", captureResult.transactionId);
+            pendingTransaction = null;   // done, prevent double-capture
+            this.hidden = true;
+            paypalButton.hidden = false; 
+            payLaterButton.hidden = false;
+            payLaterMessage.hidden = false;
+        } else {
+            this.hidden = false;   
+        }
+    } catch (error) {
+        console.error("Error during capture:", error);
+    }
+});    
