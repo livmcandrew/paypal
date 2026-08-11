@@ -479,13 +479,22 @@ fetch("/btcheckout")
                                 currencyCode: 'GBP',
                                 totalPriceStatus: 'FINAL',
                                 totalPrice: '150.00',
+                                totalPriceLabel: 'Total',
+                                displayItems: [
+                                    {
+                                        label: 'Test Product - Cashmere Knitted Jumper',
+                                        type: 'LINE_ITEM',
+                                        price: '143.00',   
+                                        status: 'FINAL'
+                                    },
+                                    {
+                                        label: 'Tax',
+                                        type: 'TAX',
+                                        price: '7.00',   
+                                    }
+                                ]
                             }
                         });
-
-                        paymentDataRequest.transactionInfo.displayItems = [
-                            { label: 'Test Product - Cashmere Knitted Jumper', type: 'LINE_ITEM', price: '143.00', status: 'FINAL' },
-                            { label: 'Tax', type: 'TAX', price: '7.00', status: 'FINAL' }
-                        ];
 
                         var cardPaymentMethod = paymentDataRequest.allowedPaymentMethods[0];
                         cardPaymentMethod.parameters.billingAddressRequired = true;
