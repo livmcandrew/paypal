@@ -93,3 +93,19 @@ h2 {
   background-color: #0079c1;
   font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
 }
+
+/* Venmo Button */
+#venmo-button {
+            display: none;
+            width: 100%;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #fff;
+            background: #3D95CE;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+#venmo-button:hover { background: #2b7ab5; }
+#venmo-button:disabled { opacity: 0.6; cursor: not-allowed; }

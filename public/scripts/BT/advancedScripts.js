@@ -22,6 +22,7 @@ async function transactionPaymentNonce(payload, setAmount) {
       body: JSON.stringify({
         paymentMethodNonce: payload.nonce,
         amount: setAmount,
+        lineItems: lineItems
       })
     });
 
@@ -182,6 +183,19 @@ fetch("/btcheckout")
                     return;
                 }
 
+                 //adding line items to the request options 
+                const lineItems = [
+                    {
+                        name: 'Test Product',
+                        quantity: '1',
+                        unitAmount: "143.00",
+                        kind: "debit",
+                        unitTaxAmount: "7.00",
+                        description: "Cashmere Knitted Jumper",
+                        productCode: "Livs-test-123",
+                    }
+                ];          
+
                 //Run 3DS verification on the nonce before checkout
                 threeDS.verifyCard({
                     amount: setAmount,
@@ -203,7 +217,7 @@ fetch("/btcheckout")
 
                 try {
                     // Call transcation API 
-                    result = await transactionPaymentNonce(threeDSPayload, setAmount)
+                    result = await transactionPaymentNonce(threeDSPayload, setAmount, lineItems)
                     //SHOW RESPONSE
                     if (result.success) {
                         alert("✅ Transaction successful!\nTransaction ID: " + result.transactionId);

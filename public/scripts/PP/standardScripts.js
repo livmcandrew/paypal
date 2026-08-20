@@ -1,7 +1,7 @@
 // Render the PayPal button
 const paypalButtons = window.paypal.Buttons({
    message: {
-        amount: 100,
+        amount: 300.00,
     },
     style: {
         shape: "rect",
@@ -70,6 +70,8 @@ if (cardField.isEligible()) {
         });
 }
 
+const setAmount = document.getElementById("amount").value;
+//console.log("Amount set to: ", setAmount);
 //Create Order function
 async function createOrderCallback() {
     try {
@@ -166,3 +168,30 @@ function resultMessage(message) {
     const container = document.querySelector("#result-message");
     container.innerHTML = message;
 }
+
+//Pay Later Messages component
+paypal
+    .Messages({
+    amount: 4000.00,
+    pageType: 'product-details',
+    style: {
+        layout: 'text',
+        logo: {
+        type: 'primary',
+        position: 'top'
+        }
+    },
+    onRender: () => {
+        console.log('Callback called on render')
+        // Send a render event to your analytics platform
+    },
+    onClick: () => {
+        console.log('Callback called on click')
+        // Send a click event to your analytics platform
+    },
+    onApply: () => {
+        console.log('Callback called on apply')
+        // Send an apply event to your analytics platform
+    }
+    })
+    .render('.pp-message');

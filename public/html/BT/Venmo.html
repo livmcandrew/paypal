@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <script src="https://js.braintreegateway.com/web/3.144.0/js/data-collector.min.js"></script>
+    <script src="https://js.braintreegateway.com/web/3.144.0/js/three-d-secure.min.js"></script>
+     <!-- Braintree core client -->
+    <script src="https://js.braintreegateway.com/web/3.144.0/js/client.min.js"></script>
+    <!-- PayPal Checkout for Braintree -->
+    <script src="https://js.braintreegateway.com/web/3.144.0/js/paypal-checkout.min.js"></script>
+    <!-- Venmo -->
+    <script src="https://js.braintreegateway.com/web/3.144.0/js/venmo.min.js"></script>
+    <link rel="stylesheet" href="/styles/styles.css">
+    <script src="/scripts/BT/venmoScripts.js" defer></script>
+    <title>Liv's Site</title>
+  </head>
+  
+  <nav class="navbar-y">
+      <div class="nav-logo"></div>
+      <ul class="nav-list" >
+        <a class="nav-links"  href="../../index.html">Home</a>
+        <a class="nav-links"  href="dropInUI.html"> Drop-In UI</a>
+        <a class="nav-links"  href="VaultingNewCust.html">Vaulting</a>
+        <a class="nav-links"  href="hostedFields.html"> Hosted Fields</a>
+      </ul>
+  </nav>
+  <body>
+    <div class="box" id="demo-frame">
+      <h2>Venmo</h2>
+      <main class="page">
+      <div class="checkout-card" id="checkout-message"> 
+      <div class="heading">CHECKOUT</div>
+      
+        <div class="basket">
+          <img class="item-image" src="/images/jumper.jpeg"> 
+          <div class="purchase">
+            <div class="item-text">Cashmere Knitted Jumper</div>
+            <div class="item-subtext">S | Black</div>
+          </div>
+          <div class="purchase-price">
+            <div class="item-price" id="amount" value="100">£100</div>
+          </div>
+        </div>
+       
+        <div class="paypal-wrap">
+          <button id="venmo-button" class="venmo-button">Pay with Venmo</button>
+        </div>
+
+      </div>
+          <div id="result-message"> </div>
+
+      </main>
+    </div>
+  </body>
+</html>

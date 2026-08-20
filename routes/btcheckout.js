@@ -25,15 +25,27 @@ router.get("/", (req, res) => {
   });
 });
 
-// GET transcation.sale API to make sale
+// GET Token API to reteive client token
+router.get("/usdMAID", (req, res) => {
+  gateway.clientToken.generate({ merchantAccountId: "liv_usd" }, (err, response) => {
+    if (err) {
+      console.error("clientToken.generate error:", err);
+      return res.status(500).send({ error: err.message || err });
+    }
+    return res.send(response.clientToken);
+  });
+});
+
+// POST transcation.sale API to make sale
 router.post("/",  express.json(), (req, res) => {
-  const { paymentMethodNonce, deviceData, amount, storeInVault } = req.body;
+  const { paymentMethodNonce, deviceData, amount, storeInVault, lineItems } = req.body;
 
   gateway.transaction.sale(
     {
       deviceData,
       paymentMethodNonce,
       amount,
+      ...(lineItems && { lineItems }), // include lineItems if provided
       merchantAccountId: "liv_gbp",
       options: {
         submitForSettlement: true,
@@ -59,6 +71,44 @@ router.post("/",  express.json(), (req, res) => {
         result.transaction?.customer?.id ||
         result.transaction?.customerId ||
         null;
+
+      return res.send({
+        success: true,
+        transactionId: result.transaction.id,
+        paymentMethodToken,
+        customerId,
+        result,
+      });
+    }
+  );
+});
+
+// POST transcation.sale API for Venmo
+router.post("/venmo",  express.json(), (req, res) => {
+  const { paymentMethodNonce, deviceData, amount, lineItems } = req.body;
+
+  gateway.transaction.sale(
+    {
+      deviceData,
+      paymentMethodNonce,
+      amount,
+      ...(lineItems && { lineItems }), // include lineItems if provided
+      merchantAccountId: "liv_usd",
+      options: {
+        submitForSettlement: true,
+        venmo: {
+            profileId: '4662967699244531884' 
+        }
+      },
+    },
+    (error, result) => {
+      if (error || !result?.success) {
+        console.error('Venmo transaction failed:', error || result);
+        return res.status(422).send({
+          success: false,
+          message: result?.message || 'Transaction could not be completed.',
+        });
+      }
 
       return res.send({
         success: true,

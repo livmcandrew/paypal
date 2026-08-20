@@ -5,13 +5,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <!-- Hosted Fields -->
-    <script src="https://js.braintreegateway.com/web/3.134.0/js/hosted-fields.min.js"></script>
+
     <script src="https://js.braintreegateway.com/web/3.134.0/js/three-d-secure.min.js"></script>
     <!-- Braintree core client -->
     <script src="https://js.braintreegateway.com/web/3.134.0/js/client.min.js"></script>
     <!-- PayPal Checkout for Braintree -->
     <script src="https://js.braintreegateway.com/web/3.134.0/js/paypal-checkout.min.js"></script>
+
     <link rel="stylesheet" href="/styles/styles.css">
     <script src="/scripts/BT/FXaaSScripts.js" defer></script>
     <title>Liv's Site</title>
@@ -45,47 +45,45 @@
         </div>
       </div>
 
-
-        
-        <div class="payment-actions">
-          Select Currency
-          <div class="dropdown" id="presentment-currency">
-            <button class="dropdown-btn" id="presentment-toggle">
-               <span id="selected-presentment">GBP</span>
-            </button>
-            <div id="presentment-menu" class="dropdown-menu">
-              <a class="dropdown-item" data-currency="CAN">CAN</a>
-              <a class="dropdown-item" data-currency="EUR">EUR</a>
-              <a class="dropdown-item" data-currency="USD">USD</a>
-              <a class="dropdown-item" data-currency="GBP">GBP</a>
+              
+          
+          <div class="currency-row">
+            <label>Presentment Currency</label>
+            <div class="dropdown" id="presentment-currency">
+              <button class="dropdown-btn" id="presentment-toggle">
+                <span id="selected-presentment">GBP</span>
+              </button>
+              <div id="presentment-menu" class="dropdown-menu">
+                <a class="dropdown-item" data-currency="CAN">CAN</a>
+                <a class="dropdown-item" data-currency="EUR">EUR</a>
+                <a class="dropdown-item" data-currency="USD">USD</a>
+                <a class="dropdown-item" data-currency="GBP">GBP</a>
+              </div>
             </div>
-          </div>
 
-          <div class="dropdown" id="settle-currency">
-            <button class="dropdown-btn" id="settlement-toggle">
-               <span id="selected-settlement">GBP</span>
-            </button>
-            <div id="settlement-menu" class="dropdown-menu">
-              <a class="dropdown-item" data-currency="CAN">CAN</a>
-              <a class="dropdown-item" data-currency="EUR">EUR</a>
-              <a class="dropdown-item" data-currency="USD">USD</a>
-              <a class="dropdown-item" data-currency="GBP">GBP</a>
+            <label>Settlement Currency</label>
+            <div class="dropdown" id="settlement-currency">
+              <button class="dropdown-btn" id="settlement-toggle">
+                <span id="selected-settlement">GBP</span>
+              </button>
+              <div id="settlement-menu" class="dropdown-menu">
+                <a class="dropdown-item" data-currency="CAN">CAN</a>
+                <a class="dropdown-item" data-currency="EUR">EUR</a>
+                <a class="dropdown-item" data-currency="USD">USD</a>
+                <a class="dropdown-item" data-currency="GBP">GBP</a>
+              </div>
             </div>
           </div>
           
           <div class="paypal-wrap">
+            
+            <div class="payment-actions">
+            <button class="pay-button"  id="submit-button">Exchange</button>
 
-            <br>
-            <br>
-            <br>
+            <div id="divResponse"></div>
+            </div>
 
-          <div id="divResponse"></div>
-
-          <button class="pay-button"  id="submit-button">Exchange</button>
           </div>
-        </div>
-        </div>
-       </div>
           
     </div>
   </main>
