@@ -287,8 +287,8 @@ fetch("/btcheckout")
                                 kind: "debit",
                                 unitTaxAmount: "7.00",
                                 description: "Cashmere Knitted Jumper",
-                                productCode: "LivsTest",
-                                total_amount: setAmount
+                                productCode: "1234",
+                                totalAmount: setAmount
                             }
                         ];          
 
