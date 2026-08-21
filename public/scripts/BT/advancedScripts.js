@@ -14,7 +14,7 @@ var billingAddress = {
 };
 
 // Call 'payload.nonce' to your server
-async function transactionPaymentNonce(payload, setAmount) {
+async function transactionPaymentNonce(payload, setAmount, lineItems) {
   try {
     const response = await fetch("/btcheckout", {
       method: "POST",
@@ -200,6 +200,7 @@ fetch("/btcheckout")
                 threeDS.verifyCard({
                     amount: setAmount,
                     nonce: payload.nonce,
+                    //lineItems: lineItems,
                     bin: payload.details.bin,
                     onLookupComplete: function (data, next) {
                         next();
